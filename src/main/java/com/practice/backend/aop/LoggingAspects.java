@@ -1,17 +1,19 @@
 package com.practice.backend.aop;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 
 @Component
 @Aspect
-@Slf4j
 public class LoggingAspects {
+
+    Logger log = LoggerFactory.getLogger(LoggingAspects.class);
 
     // Аннотация-advice, которая обеспечивает выполнение метода beforeMainControllerMethod перед каждым вызовом методов,
     // помеченных в Pointcuts как allMainControllerMethodsWithUUID().
