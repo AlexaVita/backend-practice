@@ -34,7 +34,7 @@ public class LoggingAspects {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Object[] arguments = joinPoint.getArgs();
 
-        String startMessage = MessageFormat.format("Request named ''{0}'' with ID {1} has been finished with success",
+        String startMessage = MessageFormat.format("Request named ''{0}'' with ID {1} finished with success",
                 methodSignature.getName(), arguments[0].toString());
 
         log.trace(startMessage);
@@ -45,7 +45,7 @@ public class LoggingAspects {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Object[] arguments = joinPoint.getArgs();
 
-        String startMessage = MessageFormat.format("Request named ''{0}'' with ID {1} has been failed with error: {2}",
+        String startMessage = MessageFormat.format("Request named ''{0}'' with ID {1} failed with error: {2}",
                 methodSignature.getName(), arguments[0].toString(), e.getMessage());
 
         log.error(startMessage);
