@@ -1,14 +1,12 @@
 package com.practice.backend.logging;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.text.MessageFormat;
 import java.util.UUID;
 
 /** Класс со статическими методами, предназначенными для логирования из любой точки проекта */
-@Slf4j
 public class Logging {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Logging.class);
     /** Записывает в файл и консоль информацию о методе, его вызвавшем, его id и сообщении */
     public static void info(UUID id, String methodName, String message) {
         log.info(MessageFormat.format("Method ''{0}'' with ID {1}: {2}", methodName, id, message));
