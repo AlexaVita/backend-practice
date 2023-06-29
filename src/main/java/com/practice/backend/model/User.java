@@ -1,6 +1,6 @@
 package com.practice.backend.model;
 
-import lombok.Data;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 
-@Data
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -25,6 +24,34 @@ public class User implements UserDetails {
     public User() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public User(String username, String password, boolean active, Role role) {
         this.username = username;
         this.password = password;
@@ -35,6 +62,16 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(getRole());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     @Override
