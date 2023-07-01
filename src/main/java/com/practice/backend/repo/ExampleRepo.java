@@ -14,11 +14,9 @@ import java.util.List;
 @Repository
 public class ExampleRepo {
     private final DataSource dataSource;
-
     public ExampleRepo(@Qualifier("hikariPostgresDataSource") DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
     public List<String> getNumbers() throws SQLException {
         List<String> numbers = new ArrayList<>();
         String sqlQuery = "SELECT number FROM example";
@@ -31,7 +29,6 @@ public class ExampleRepo {
                 numbers.add(number);
             }
         }
-
         return numbers;
     }
 }
