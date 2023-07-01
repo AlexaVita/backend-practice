@@ -5,3 +5,13 @@ server:
 logging:
   file:
     name: applicationLog.log
+spring:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/backend-practice
+    driver-class-name: org.postgresql.Driver
+    connection-timeout: 20000
+    minimum-idle: 5
+    maximum-pool-size: 10
+    max-lifetime: 900000
+    username: postgres
+    password: teach1postgres
