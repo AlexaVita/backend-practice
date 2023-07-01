@@ -10,7 +10,7 @@ import java.util.UUID;
 @RestController
 public class MainRestController {
     @GetMapping("/ping")
-    public String ping(@RequestParam(required = false) String name, @RequestAttribute("requestUUID") UUID requestUUID) {
+    public String ping(@RequestAttribute("requestUUID") UUID requestUUID) {
         return "pong";
     }
 }
