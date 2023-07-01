@@ -17,7 +17,8 @@ CREATE TABLE SectorSettingsMap(
 	binList varchar(1024), --?
 	guapPay boolean,
 	
-	FOREIGN KEY (sector_id) REFERENCES Sector(id)
+	FOREIGN KEY (sector_id) REFERENCES Sector(id),
+	UNIQUE (sector_id, name)
 );
 
 
@@ -29,7 +30,8 @@ CREATE TABLE Fee(
 	fix varchar(32),
 	notLess varchar(32),
 	
-	FOREIGN KEY (sector_id) REFERENCES Sector(id)
+	FOREIGN KEY (sector_id) REFERENCES Sector(id),
+	UNIQUE (sector_id, paymentSystem)
 );
 
 
@@ -44,3 +46,6 @@ CREATE TABLE Operation(
 	state varchar(64),
 	type varchar(64)
 );
+
+CREATE INDEX idx_date ON Operation (date);
+CREATE INDEX idx_sector_id_type ON Operation (sector_id, type);
