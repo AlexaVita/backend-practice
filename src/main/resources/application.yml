@@ -2,14 +2,6 @@ server:
   port: 80
   servlet:
     context-path: /api
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/backend-practice
-    username: postgres
-    password: teach1postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
 logging:
   file:
     name: applicationLog.log
