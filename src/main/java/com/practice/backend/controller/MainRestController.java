@@ -29,7 +29,7 @@ public class MainRestController {
 //    ExampleRepo exampleRepo;
 
     @GetMapping("/ping")
-    public String ping(@RequestAttribute("requestUUID") UUID requestUUID) {
+    public String ping(@RequestAttribute("userUUID") UUID userUUID) {
         return "pong";
     }
 

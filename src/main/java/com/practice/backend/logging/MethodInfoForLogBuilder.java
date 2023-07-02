@@ -16,7 +16,12 @@ public class MethodInfoForLogBuilder {
     }
 
     public String buildMethodInfoForLog() {
-        StringBuilder methodInfo = new StringBuilder(methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() + "(");
+
+        String classOfMethod = methodSignature.getDeclaringTypeName();
+        // Отсечь всё кроме класса
+        classOfMethod = classOfMethod.substring(classOfMethod.lastIndexOf('.') + 1);
+
+        StringBuilder methodInfo = new StringBuilder(classOfMethod + "." + methodSignature.getName() + "(");
 
         Class[] parametersTypes = methodSignature.getParameterTypes();
 
@@ -24,7 +29,12 @@ public class MethodInfoForLogBuilder {
 
 
         for (int i = 0; i < parametersTypes.length; i++) {
-            methodInfo.append(parametersTypes[i].toString())
+
+            String parameterType = parametersTypes[i].toString();
+            // Отсечь всё кроме класса
+            parameterType = parameterType.substring(parameterType.lastIndexOf('.') + 1);
+
+            methodInfo.append(parameterType)
                     .append(' ')
                     .append(parametersNames[i])
                     .append(" = ")
