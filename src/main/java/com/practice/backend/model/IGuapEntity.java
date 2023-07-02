@@ -1,6 +1,6 @@
 package com.practice.backend.model;
 
-public interface IguapEntity {
+public interface IGuapEntity {
     Long getId();
 
     Long getSectorId();

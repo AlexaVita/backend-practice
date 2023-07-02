@@ -1,9 +1,9 @@
 package com.practice.backend.model;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
-public class Fee implements IguapEntity {
+public class Fee implements IGuapEntity {
 
     @NotNull
     private Long id;

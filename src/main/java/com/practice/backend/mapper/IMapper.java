@@ -12,7 +12,8 @@ public interface IMapper<EntityType> {
 
     EntityType getById(Long id);
 
+    void delete(Long id);
 
-    // TODO сделать удаление и обновление
+    void update(Long updatedId, EntityType entity);
 
 }

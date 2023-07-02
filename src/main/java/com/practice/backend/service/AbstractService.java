@@ -1,7 +1,6 @@
 package com.practice.backend.service;
 
 import com.practice.backend.mapper.IMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -18,19 +17,15 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
         return mapper.getById(id);
     }
 
-
-    // TODO сделать удаление
     public void delete(Long id) {
-        // здесь удаление
+        mapper.delete(id);
     }
 
     public void insert(EntityType entity) {
         mapper.insert(entity);
     }
 
-
-    // TODO сделать обновление
-    public void update(Long id, EntityType entity) {
-        // здесь обновление
+    public void update(Long updatedId, EntityType entity) {
+        mapper.update(updatedId, entity);
     }
 }

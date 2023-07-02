@@ -1,10 +1,10 @@
 package com.practice.backend.model;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 
-public class SectorSettingsMap implements IguapEntity {
+public class SectorSettingsMap implements IGuapEntity {
     @NotNull
     private Long id;
     @NotNull
@@ -16,16 +16,16 @@ public class SectorSettingsMap implements IguapEntity {
     private Boolean payment;
     @Pattern(regexp = "[\\p{Print}]{0,255}")
     private String binList;
-    private Boolean guapay;
+    private Boolean guapPay;
 
-    public SectorSettingsMap(Long id, Long sectorId, String name, String value, Boolean payment, String binList, Boolean guapay) {
+    public SectorSettingsMap(Long id, Long sectorId, String name, String value, Boolean payment, String binList, Boolean guapPay) {
         this.id = id;
         this.sectorId = sectorId;
         this.name = name;
         this.value = value;
         this.payment = payment;
         this.binList = binList;
-        this.guapay = guapay;
+        this.guapPay = guapPay;
     }
 
     @Override
@@ -78,13 +78,14 @@ public class SectorSettingsMap implements IguapEntity {
         this.binList = binList;
     }
 
-    public Boolean getGuapay() {
-        return guapay;
+    public Boolean getGuapPay() {
+        return guapPay;
     }
 
-    public void setGuapay(Boolean guapay) {
-        this.guapay = guapay;
+    public void setGuapPay(Boolean guapPay) {
+        this.guapPay = guapPay;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -97,12 +98,12 @@ public class SectorSettingsMap implements IguapEntity {
                 Objects.equals(value, that.value) &&
                 Objects.equals(payment, that.payment) &&
                 Objects.equals(binList, that.binList) &&
-                Objects.equals(guapay, that.guapay);
+                Objects.equals(guapPay, that.guapPay);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sectorId, name, value, payment, binList, guapay);
+        return Objects.hash(id, sectorId, name, value, payment, binList, guapPay);
     }
 
     @Override
@@ -114,7 +115,7 @@ public class SectorSettingsMap implements IguapEntity {
                 ", value='" + value + '\'' +
                 ", payment=" + payment +
                 ", binList='" + binList + '\'' +
-                ", guapay=" + guapay +
+                ", guapPay=" + guapPay +
                 '}';
+        }
     }
-}
