@@ -14,15 +14,4 @@ public class SectorService extends AbstractService<ISectorMapper, Sector> {
         mapper = sectorMapper;
     }
 
-    // TODO сделать удаление
-    @Override
-    public void delete(Long id) {
-
-    }
-
-    // TODO сделать обновление записи
-    @Override
-    public void update(Long id, Sector entity) {
-
-    }
 }
