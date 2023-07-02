@@ -20,7 +20,9 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
 
 
     // TODO сделать удаление
-    public abstract void delete(Long id);
+    public void delete(Long id) {
+        // здесь удаление
+    }
 
     public void insert(EntityType entity) {
         mapper.insert(entity);
@@ -28,5 +30,7 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
 
 
     // TODO сделать обновление
-    public abstract void update(Long id, EntityType entity);
+    public void update(Long id, EntityType entity) {
+        // здесь обновление
+    }
 }
