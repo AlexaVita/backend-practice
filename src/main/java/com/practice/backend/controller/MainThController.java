@@ -15,7 +15,7 @@ public class MainThController {
      *  если изменить запрос на '/api/hello?name=MyName', то получим изменённую страницу по шаблону,
      *  которая теперь будет выводить "Hello MyName!" */
     @GetMapping("/hello")
-    public String hello(@RequestAttribute(name = "requestUUID") UUID requestUUID, @RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+    public String hello(@RequestAttribute(name = "userUUID") UUID userUUID, @RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
         return "hello_world";
     }
