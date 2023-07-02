@@ -1,32 +1,42 @@
 package com.practice.backend.model;
 
-public class Sector {
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import java.util.Objects;
 
-    Long id;
-    String name;
-    boolean active;
-    String signcode;
-    boolean checkIp;
-    String allowedIps;
+public class Sector implements IGuapEntity {
+    @NotNull
+    private Long id;
+    @Pattern(regexp = "[\\p{Print}]{0,255}")
+    private String name;
+    private Boolean active;
+    @Pattern(regexp = "[\\p{Print}]{0,255}")
+    private String signCode;
+    private Boolean checkIp;
+    @Pattern(regexp = "[\\p{Print}]{0,255}")
+    private String allowedIps;
 
-    public Sector(Long sectorId, String name, boolean active, String signcode, boolean checkIp, String allowedIps) {
-        this.id = sectorId;
+    public Sector(Long id, String name, Boolean active, String signCode, Boolean checkIp, String allowedIps) {
+        this.id = id;
         this.name = name;
         this.active = active;
-        this.signcode = signcode;
+        this.signCode = signCode;
         this.checkIp = checkIp;
         this.allowedIps = allowedIps;
     }
 
-    public Sector() {
-    }
-
+    @Override
     public Long getId() {
         return id;
     }
 
-    public void setId(Long sectorId) {
-        this.id = sectorId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public Long getSectorId() {
+        return id;
     }
 
     public String getName() {
@@ -37,27 +47,27 @@ public class Sector {
         this.name = name;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public String getSigncode() {
-        return signcode;
+    public String getSignCode() {
+        return signCode;
     }
 
-    public void setSigncode(String signcode) {
-        this.signcode = signcode;
+    public void setSignCode(String signCode) {
+        this.signCode = signCode;
     }
 
-    public boolean isCheckIp() {
+    public Boolean getCheckIp() {
         return checkIp;
     }
 
-    public void setCheckIp(boolean checkIp) {
+    public void setCheckIp(Boolean checkIp) {
         this.checkIp = checkIp;
     }
 
@@ -70,15 +80,32 @@ public class Sector {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sector sectorDto = (Sector) o;
+        return Objects.equals(id, sectorDto.id) &&
+                Objects.equals(name, sectorDto.name) &&
+                Objects.equals(active, sectorDto.active) &&
+                Objects.equals(signCode, sectorDto.signCode) &&
+                Objects.equals(checkIp, sectorDto.checkIp) &&
+                Objects.equals(allowedIps, sectorDto.allowedIps);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, active, signCode, checkIp, allowedIps);
+    }
+
+    @Override
     public String toString() {
-        return "Sector{" +
-                "sectorId=" + id +
+        return "SectorDto{" +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", active=" + active +
-                ", signcode='" + signcode + '\'' +
+                ", signCode='" + signCode + '\'' +
                 ", checkIp=" + checkIp +
                 ", allowedIps='" + allowedIps + '\'' +
                 '}';
     }
-
 }

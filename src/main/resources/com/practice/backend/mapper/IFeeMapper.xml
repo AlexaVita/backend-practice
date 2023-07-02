@@ -8,4 +8,25 @@
         select * from fee
     </select>
 
+    <select id="getById">
+        select * from fee where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fee(sector_id,paymentsystem,percent,fix,notless) VALUES(#{sectorId},#{paymentSystem},#{percent},#{fix},#{notLess});
+    </insert>
+
+    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Fee">
+        UPDATE fee
+        SET sector_id = #{entity.sectorId},
+            paymentsystem = #{entity.paymentSystem},
+            percent = #{entity.percent},
+            fix = #{entity.fix},
+            notless = #{entity.notLess}
+        WHERE id = #{updatedId};
+    </update>
+
+    <delete id="delete">
+        delete from fee where id = #{id}
+    </delete>
 </mapper>

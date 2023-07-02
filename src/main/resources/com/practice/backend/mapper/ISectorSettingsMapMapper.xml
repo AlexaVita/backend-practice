@@ -8,4 +8,26 @@
         select * from sectorsettingsmap
     </select>
 
+    <select id="getById">
+        select * from sectorsettingsmap where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sectorsettingsmap(sector_id,name,value,payment,binlist,guappay) VALUES(#{sectorId},#{name},#{value},#{payment},#{binList},#{guapPay});
+    </insert>
+
+    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.SectorSettingsMap">
+        UPDATE sectorsettingsmap
+        SET sector_id = #{entity.sectorId},
+            name = #{entity.name},
+            value = #{entity.value},
+            payment = #{entity.payment},
+            binlist = #{entity.binList},
+            guappay = #{entity.guapPay}
+        WHERE id = #{updatedId};
+    </update>
+
+    <delete id="delete">
+        delete from sectorsettingsmap where id = #{id}
+    </delete>
 </mapper>

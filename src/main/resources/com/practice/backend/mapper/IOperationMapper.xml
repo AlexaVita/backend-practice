@@ -8,4 +8,28 @@
         select * from operation
     </select>
 
+    <select id="getById">
+        select * from operation where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type) VALUES(#{sector_id},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type});
+    </insert>
+
+    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Operation">
+        UPDATE operation
+        SET sector_id = #{entity.sector_id},
+            date = #{entity.timestamp},
+            amount = #{entity.amount},
+            fee = #{entity.fee},
+            description = #{entity.description},
+            email = #{entity.email},
+            state = #{entity.state},
+            type = #{entity.type}
+        WHERE id = #{updatedId};
+    </update>
+
+    <delete id="delete">
+        delete from operation where id = #{id}
+    </delete>
 </mapper>

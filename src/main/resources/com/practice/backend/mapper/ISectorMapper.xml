@@ -16,4 +16,18 @@
         INSERT INTO sector(name,active,signcode,checkIp,allowedIps) VALUES(#{name},#{active},#{signcode},#{checkIp},#{allowedIps});
     </insert>
 
+    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Sector">
+        UPDATE sector
+        SET name = #{entity.name},
+            active = #{entity.active},
+            signCode = #{entity.signCode},
+            checkIp = #{entity.checkIp},
+            allowedIps = #{entity.allowedIps}
+        WHERE id = #{updatedId};
+    </update>
+
+    <delete id="delete">
+        delete from sector where id = #{id}
+    </delete>
+
 </mapper>
