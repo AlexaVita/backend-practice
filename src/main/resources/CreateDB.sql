@@ -23,7 +23,7 @@ CREATE TABLE SectorSettingsMap(
 
 
 CREATE TABLE Fee(
-	id bigserial,
+	id bigserial PRIMARY KEY,
 	sector_id bigint,
 	paymentSystem varchar(64), --?
 	percent varchar(32),
