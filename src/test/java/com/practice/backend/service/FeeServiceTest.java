@@ -1,6 +1,8 @@
 package com.practice.backend.service;
 
-import com.practice.backend.model.Fee;
+import com.practice.backend.exception.EmptyTableException;
+import com.practice.backend.model.Fee.EPaymentSystem;
+import com.practice.backend.model.Fee.Fee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,15 +20,24 @@ class FeeServiceTest {
 
     Random random = new Random();
     // Тестовая запись (если хотите добавить её несколько раз, то нужно менять sectorID или paymentSystem)
-    Fee feeTest = new Fee(0L, 0L, "VISA", "0.12", "10.0", "50");
+    Fee feeTest = new Fee(0L, 0L, EPaymentSystem.MASTERCARD, "0.12", "10.0", "50");
 
     @Test
     void insertAndGetLastShouldBeEqualInitialInsert() {
 
+        System.out.println(feeTest.getPaymentSystem().name());
+
         // Просто пробуем вставить запись в бд, и проверяем её присутствие в БД
         feeServiceTest.insert(feeTest);
 
-        Fee actualFee = getLastFee();
+        Fee actualFee;
+
+        try {
+            actualFee = getLastFee();
+        } catch (EmptyTableException e) {
+            fail(e);
+            return;
+        }
 
         assertEquals(feeTest, actualFee);
 
@@ -36,7 +47,14 @@ class FeeServiceTest {
     void deletedLastEntityShouldNotBeInDB() {
 
         // Просто удаляем последнюю запись и смотрим, чтобы её не было в БД
-        Fee deletingFee = getLastFee();
+        Fee deletingFee;
+
+        try {
+            deletingFee = getLastFee();
+        } catch (EmptyTableException e) {
+            fail(e);
+            return;
+        }
 
         feeServiceTest.delete(deletingFee.getId());
 
@@ -50,7 +68,13 @@ class FeeServiceTest {
     void deletedAnyEntityShouldNotBeInDB() {
 
         // Просто удаляем рандомную запись и смотрим, чтобы её не было в БД
-        Fee deletingFee = getRandomFee();
+        Fee deletingFee;
+        try {
+            deletingFee = getRandomFee();
+        } catch (EmptyTableException e) {
+            fail(e);
+            return;
+        }
 
         feeServiceTest.delete(deletingFee.getId());
 
@@ -66,7 +90,13 @@ class FeeServiceTest {
     @Test
     void updatedAndGottenShouldBeEqualUpdated() {
 
-        Fee initial = getRandomFee(); // Берём случайную запись
+        Fee initial;
+        try {
+            initial = getRandomFee(); // Берём случайную запись
+        } catch (EmptyTableException e) {
+            fail(e);
+            return;
+        }
 
         // Генерируем обновлённую на основе имеющейся (рандомим fix и notLess)
         Fee updated = new Fee(initial.getId(), initial.getSectorId(), initial.getPaymentSystem(),
@@ -84,9 +114,11 @@ class FeeServiceTest {
 
     }
 
-    Fee getLastFee() {
+    Fee getLastFee() throws EmptyTableException {
         ArrayList<Fee> fees = getAllFees();
-        System.out.println(fees);
+        if (fees.size() < 1) {
+            throw new EmptyTableException("Fee table is empty!");
+        }
         return fees.get(fees.size() - 1);
     }
 
@@ -95,8 +127,11 @@ class FeeServiceTest {
         return (ArrayList<Fee>) feeServiceTest.getAll();
     }
 
-    Fee getRandomFee() {
+    Fee getRandomFee() throws EmptyTableException {
         ArrayList<Fee> fees = getAllFees();
+        if (fees.size() < 1) {
+            throw new EmptyTableException("Fee table is empty!");
+        }
         return fees.get(random.nextInt(fees.size()));
     }
 
