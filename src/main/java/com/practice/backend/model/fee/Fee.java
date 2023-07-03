@@ -1,4 +1,4 @@
-package com.practice.backend.model.Fee;
+package com.practice.backend.model.fee;
 
 import com.practice.backend.model.IGuapEntity;
 import jakarta.validation.constraints.NotNull;

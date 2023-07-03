@@ -1,6 +1,6 @@
 package com.practice.backend.mapper;
 
-import com.practice.backend.model.Fee.Fee;
+import com.practice.backend.model.fee.Fee;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

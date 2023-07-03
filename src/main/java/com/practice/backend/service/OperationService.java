@@ -1,7 +1,7 @@
 package com.practice.backend.service;
 
 import com.practice.backend.mapper.IOperationMapper;
-import com.practice.backend.model.Operation;
+import com.practice.backend.model.operation.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
