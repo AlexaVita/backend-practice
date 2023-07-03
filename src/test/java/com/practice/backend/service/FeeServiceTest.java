@@ -1,8 +1,8 @@
 package com.practice.backend.service;
 
 import com.practice.backend.exception.EmptyTableException;
-import com.practice.backend.model.Fee.EPaymentSystem;
-import com.practice.backend.model.Fee.Fee;
+import com.practice.backend.model.fee.EPaymentSystem;
+import com.practice.backend.model.fee.Fee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +24,6 @@ class FeeServiceTest {
 
     @Test
     void insertAndGetLastShouldBeEqualInitialInsert() {
-
-        System.out.println(feeTest.getPaymentSystem().name());
 
         // Просто пробуем вставить запись в бд, и проверяем её присутствие в БД
         feeServiceTest.insert(feeTest);

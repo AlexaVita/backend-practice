@@ -1,5 +1,6 @@
-package com.practice.backend.model;
+package com.practice.backend.model.operation;
 
+import com.practice.backend.model.IGuapEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 public class Operation implements IGuapEntity {
     public Operation(@NotNull Long id, @NotNull Long sector_id, @NotNull Timestamp timestamp, Long amount, Long fee,
-                     String description, String email, String state, String type) {
+                     String description, String email, EOperationStates state, EOperationTypes type) {
         this.id = id;
         this.sector_id = sector_id;
         this.timestamp = timestamp;
@@ -72,19 +73,19 @@ public class Operation implements IGuapEntity {
         this.email = email;
     }
 
-    public String getState() {
+    public EOperationStates getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(EOperationStates state) {
         this.state = state;
     }
 
-    public String getType() {
+    public EOperationTypes getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(EOperationTypes type) {
         this.type = type;
     }
 
@@ -111,10 +112,11 @@ public class Operation implements IGuapEntity {
     private String description;
     @Pattern(regexp = "[\\p{Print}]{0,255}")
     private String email;
-    @Pattern(regexp = "[\\p{Print}]{0,255}")
-    private String state;
-    @Pattern(regexp = "[\\p{Print}]{0,255}")
-    private String type;
+
+    private EOperationStates state;
+
+    private EOperationTypes type;
+
     @Override
     public String toString() {
         return "SectorDto{" +
