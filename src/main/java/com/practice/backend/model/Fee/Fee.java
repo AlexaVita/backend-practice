@@ -1,5 +1,6 @@
-package com.practice.backend.model;
+package com.practice.backend.model.Fee;
 
+import com.practice.backend.model.IGuapEntity;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class Fee implements IGuapEntity {
     private Long sectorId;
 
     @NotNull
-    private String paymentSystem;
+    private EPaymentSystem paymentSystem;
 
     private String percent;
 
@@ -20,7 +21,7 @@ public class Fee implements IGuapEntity {
 
     private String notLess;
 
-    public Fee(@NotNull Long id, @NotNull Long sectorId, @NotNull String paymentSystem, String percent, String fix, String notLess) {
+    public Fee(@NotNull Long id, @NotNull Long sectorId, @NotNull EPaymentSystem paymentSystem, String percent, String fix, String notLess) {
         this.id = id;
         this.sectorId = sectorId;
         this.paymentSystem = paymentSystem;
@@ -47,11 +48,11 @@ public class Fee implements IGuapEntity {
         this.sectorId = sectorId;
     }
 
-    public String getPaymentSystem() {
+    public EPaymentSystem getPaymentSystem() {
         return paymentSystem;
     }
 
-    public void setPaymentSystem(String paymentSystem) {
+    public void setPaymentSystem(EPaymentSystem paymentSystem) {
         this.paymentSystem = paymentSystem;
     }
 
