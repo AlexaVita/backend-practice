@@ -90,11 +90,19 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 			<version>3.1.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>RELEASE</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.9.3</version>
+			<scope>test</scope>
 		</dependency>
 
 
