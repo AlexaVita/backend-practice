@@ -1,7 +1,7 @@
 package com.practice.backend.model;
 
-import com.practice.backend.enums.EOperationStates;
-import com.practice.backend.enums.EOperationTypes;
+import com.practice.backend.enums.OperationStates;
+import com.practice.backend.enums.OperationTypes;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class Operation implements IGuapEntity {
     public Operation(@NotNull Long id, @NotNull Long sectorId, @NotNull Timestamp timestamp, Long amount, Long fee,
-                     String description, String email, EOperationStates state, EOperationTypes type) {
+                     String description, String email, OperationStates state, OperationTypes type) {
         this.id = id;
         this.sectorId = sectorId;
         this.timestamp = timestamp;
@@ -74,19 +74,19 @@ public class Operation implements IGuapEntity {
         this.email = email;
     }
 
-    public EOperationStates getState() {
+    public OperationStates getState() {
         return state;
     }
 
-    public void setState(EOperationStates state) {
+    public void setState(OperationStates state) {
         this.state = state;
     }
 
-    public EOperationTypes getType() {
+    public OperationTypes getType() {
         return type;
     }
 
-    public void setType(EOperationTypes type) {
+    public void setType(OperationTypes type) {
         this.type = type;
     }
 
@@ -114,9 +114,9 @@ public class Operation implements IGuapEntity {
     @Pattern(regexp = "[\\p{Print}]{0,255}")
     private String email;
 
-    private EOperationStates state;
+    private OperationStates state;
 
-    private EOperationTypes type;
+    private OperationTypes type;
 
     @Override
     public String toString() {

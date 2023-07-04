@@ -1,6 +1,6 @@
 package com.practice.backend.enums;
 
-public enum EOperationTypes {
+public enum OperationTypes {
 
     PAYMENT,
 

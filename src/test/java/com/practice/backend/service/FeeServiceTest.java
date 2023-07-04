@@ -1,7 +1,7 @@
 package com.practice.backend.service;
 
 import com.practice.backend.exception.EmptyTableException;
-import com.practice.backend.enums.EPaymentSystem;
+import com.practice.backend.enums.PaymentSystem;
 import com.practice.backend.model.Fee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ class FeeServiceTest {
 
     Random random = new Random();
     // Тестовая запись (если хотите добавить её несколько раз, то нужно менять sectorID или paymentSystem)
-    Fee feeTest = new Fee(0L, 0L, EPaymentSystem.MASTERCARD, "0.12", "10.0", "50");
+    Fee feeTest = new Fee(0L, 0L, PaymentSystem.MASTERCARD, "0.12", "10.0", "50");
 
     @Test
     void insertAndGetLastShouldBeEqualInitialInsert() {

@@ -1,8 +1,8 @@
 package com.practice.backend.service;
 
+import com.practice.backend.enums.OperationStates;
 import com.practice.backend.exception.EmptyTableException;
-import com.practice.backend.enums.EOperationStates;
-import com.practice.backend.enums.EOperationTypes;
+import com.practice.backend.enums.OperationTypes;
 import com.practice.backend.model.Operation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class OperationServiceTest {
 
     // Тестовая запись (если хотите добавить её несколько раз, то нужно менять sectorID или paymentSystem)
     Operation operationTest = new Operation(0L, 0L,new Timestamp(time.getTime()), 100L, 0L,
-            "good description", "best@email", EOperationStates.APPROVED, EOperationTypes.PAYMENT);
+            "good description", "best@email", OperationStates.APPROVED, OperationTypes.PAYMENT);
 
     @Test
     void insertAndGetLastShouldBeEqualInitialInsert() {
