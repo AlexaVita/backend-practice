@@ -93,11 +93,6 @@ public class Fee implements IGuapEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, sectorId, paymentSystem, percent, fix, notLess);
-    }
-
-    @Override
     public String toString() {
         return "Fee{" +
                 "id=" + id +

@@ -101,11 +101,6 @@ public class SectorSettingsMap implements IGuapEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, sectorId, name, value, payment, binList, guapPay);
-    }
-
-    @Override
     public String toString() {
         return "SectorSettingsMap{" +
                 "id=" + id +

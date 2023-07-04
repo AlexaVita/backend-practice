@@ -92,11 +92,6 @@ public class Sector implements IGuapEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, active, signCode, checkIp, allowedIps);
-    }
-
-    @Override
     public String toString() {
         return "SectorDto{" +
                 "id=" + id +

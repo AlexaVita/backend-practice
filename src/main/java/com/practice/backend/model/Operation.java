@@ -132,10 +132,6 @@ public class Operation implements IGuapEntity {
                 ", type=" + type +
                 '}';
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, sectorId, timestamp, amount, fee, description, email, state, type);
-    }
 
     @Override
     public boolean equals(Object o) {
