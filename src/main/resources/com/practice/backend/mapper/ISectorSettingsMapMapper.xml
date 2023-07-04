@@ -13,17 +13,14 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sectorsettingsmap(sector_id,name,value,payment,binlist,guappay) VALUES(#{sectorId},#{name},#{value},#{payment},#{binList},#{guapPay});
+        INSERT INTO sectorsettingsmap(sector_id,name,value) VALUES(#{sectorId},#{name},#{value});
     </insert>
 
     <update id="update" parameterType="com.practice.backend.model.SectorSettingsMap">
         UPDATE sectorsettingsmap
         SET sector_id = #{sectorId},
             name = #{name},
-            value = #{value},
-            payment = #{payment},
-            binlist = #{binList},
-            guappay = #{guapPay}
+            value = #{value}
         WHERE id = #{id};
     </update>
 

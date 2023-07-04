@@ -13,9 +13,6 @@ CREATE TABLE SectorSettingsMap(
 	sector_id bigint ,
 	name varchar(256),
 	value varchar(1024),
-	payment boolean,
-	binList varchar(1024), --?
-	guapPay boolean,
 	
 	FOREIGN KEY (sector_id) REFERENCES Sector(id),
 	UNIQUE (sector_id, name)
