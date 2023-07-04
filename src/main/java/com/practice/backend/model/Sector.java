@@ -97,7 +97,6 @@ public class Sector implements IGuapEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", active=" + active +
-                ", signCode='" + signCode + '\'' +
                 ", checkIp=" + checkIp +
                 ", allowedIps='" + allowedIps + '\'' +
                 '}';
