@@ -1,4 +1,4 @@
-package com.practice.backend.model.fee;
+package com.practice.backend.enums;
 
 public enum EPaymentSystem {
 

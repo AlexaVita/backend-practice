@@ -1,6 +1,6 @@
-package com.practice.backend.model.fee;
+package com.practice.backend.model;
 
-import com.practice.backend.model.IGuapEntity;
+import com.practice.backend.enums.EPaymentSystem;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -39,7 +39,6 @@ public class Fee implements IGuapEntity {
         this.id = id;
     }
 
-    @Override
     public Long getSectorId() {
         return sectorId;
     }

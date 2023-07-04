@@ -1,4 +1,4 @@
-package com.practice.backend.model.operation;
+package com.practice.backend.enums;
 
 public enum EOperationTypes {
 

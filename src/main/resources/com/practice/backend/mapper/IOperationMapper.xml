@@ -13,12 +13,12 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type) VALUES(#{sector_id},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type});
+        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type) VALUES(#{sectorId},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type});
     </insert>
 
-    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.operation.Operation">
+    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Operation">
         UPDATE operation
-        SET sector_id = #{entity.sector_id},
+        SET sector_id = #{entity.sectorId},
             date = #{entity.timestamp},
             amount = #{entity.amount},
             fee = #{entity.fee},

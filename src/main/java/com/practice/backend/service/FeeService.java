@@ -1,7 +1,7 @@
 package com.practice.backend.service;
 
 import com.practice.backend.mapper.IFeeMapper;
-import com.practice.backend.model.fee.Fee;
+import com.practice.backend.model.Fee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

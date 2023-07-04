@@ -37,7 +37,6 @@ public class SectorSettingsMap implements IGuapEntity {
         this.id = id;
     }
 
-    @Override
     public Long getSectorId() {
         return sectorId;
     }

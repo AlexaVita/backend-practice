@@ -1,6 +1,7 @@
-package com.practice.backend.model.operation;
+package com.practice.backend.model;
 
-import com.practice.backend.model.IGuapEntity;
+import com.practice.backend.enums.EOperationStates;
+import com.practice.backend.enums.EOperationTypes;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -8,10 +9,10 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Operation implements IGuapEntity {
-    public Operation(@NotNull Long id, @NotNull Long sector_id, @NotNull Timestamp timestamp, Long amount, Long fee,
+    public Operation(@NotNull Long id, @NotNull Long sectorId, @NotNull Timestamp timestamp, Long amount, Long fee,
                      String description, String email, EOperationStates state, EOperationTypes type) {
         this.id = id;
-        this.sector_id = sector_id;
+        this.sectorId = sectorId;
         this.timestamp = timestamp;
         this.amount = amount;
         this.fee = fee;
@@ -25,12 +26,12 @@ public class Operation implements IGuapEntity {
         this.id = id;
     }
 
-    public Long getSector_id() {
-        return sector_id;
+    public Long getSectorId() {
+        return sectorId;
     }
 
-    public void setSector_id(Long sector_id) {
-        this.sector_id = sector_id;
+    public void setSectorId(Long sectorId) {
+        this.sectorId = sectorId;
     }
 
     public Timestamp getTimestamp() {
@@ -101,7 +102,7 @@ public class Operation implements IGuapEntity {
     @NotNull
     private Long id;
     @NotNull
-    private Long sector_id;
+    private Long sectorId;
     @NotNull
     private Timestamp timestamp;
     @NotNull
@@ -121,7 +122,7 @@ public class Operation implements IGuapEntity {
     public String toString() {
         return "SectorDto{" +
                 "id=" + id +
-                ", sector_id='" + sector_id + '\'' +
+                ", sector_id='" + sectorId + '\'' +
                 ", timestamp=" + timestamp +
                 ", amount='" + amount + '\'' +
                 ", fee=" + fee +
@@ -133,7 +134,7 @@ public class Operation implements IGuapEntity {
     }
     @Override
     public int hashCode() {
-        return Objects.hash(id, sector_id, timestamp, amount, fee, description, email, state, type);
+        return Objects.hash(id, sectorId, timestamp, amount, fee, description, email, state, type);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class Operation implements IGuapEntity {
         if (o == null || getClass() != o.getClass()) return false;
         Operation operationDto = (Operation) o;
         return Objects.equals(id, operationDto.id) &&
-                Objects.equals(sector_id, operationDto.sector_id) &&
+                Objects.equals(sectorId, operationDto.sectorId) &&
                 Objects.equals(timestamp, operationDto.timestamp) &&
                 Objects.equals(amount, operationDto.amount) &&
                 Objects.equals(fee, operationDto.fee) &&
@@ -155,10 +156,5 @@ public class Operation implements IGuapEntity {
     @Override
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public Long getSectorId() {
-        return sector_id;
     }
 }

@@ -1,9 +1,9 @@
 package com.practice.backend.service;
 
 import com.practice.backend.exception.EmptyTableException;
-import com.practice.backend.model.operation.EOperationStates;
-import com.practice.backend.model.operation.EOperationTypes;
-import com.practice.backend.model.operation.Operation;
+import com.practice.backend.enums.EOperationStates;
+import com.practice.backend.enums.EOperationTypes;
+import com.practice.backend.model.Operation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

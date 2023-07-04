@@ -34,7 +34,6 @@ public class Sector implements IGuapEntity {
         this.id = id;
     }
 
-    @Override
     public Long getSectorId() {
         return id;
     }
