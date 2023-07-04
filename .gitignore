@@ -1,5 +1,9 @@
 HELP.md
-applicationLog.log
+
+### Logs ###
+*.log
+*.gz
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

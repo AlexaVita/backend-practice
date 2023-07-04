@@ -1,7 +1,6 @@
 package com.practice.backend.service;
 
 import com.practice.backend.exception.EmptyTableException;
-import com.practice.backend.model.fee.Fee;
 import com.practice.backend.model.operation.EOperationStates;
 import com.practice.backend.model.operation.EOperationTypes;
 import com.practice.backend.model.operation.Operation;
