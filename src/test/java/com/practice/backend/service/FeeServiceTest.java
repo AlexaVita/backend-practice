@@ -101,7 +101,7 @@ class FeeServiceTest {
                 initial.getPercent(), Integer.toString(random.nextInt(1000)), Integer.toString(random.nextInt(1000)));
 
         // Используем сервис и обновляем запись
-        feeServiceTest.update(updated.getId(), updated);
+        feeServiceTest.update(updated);
 
         Fee actualFee = feeServiceTest.getById(updated.getId());
 

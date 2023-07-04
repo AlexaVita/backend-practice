@@ -57,8 +57,8 @@ public class MainRestController {
         sectorSettingsMapService.insert(new SectorSettingsMap(4L, 2L, name, "4", true, "23,41,42", true));
     }
     @GetMapping("/update")
-    public void updateSector(@RequestParam(name = "id") Long id) {
-        sectorSettingsMapService.update( id, new SectorSettingsMap(4L, 2L, "GIGIGIGIGIGI", "4", true, "23,41,42", true));
+    public void updateSector() {
+        sectorSettingsMapService.update(new SectorSettingsMap(4L, 2L, "GIGIGIGIGIGI", "4", true, "23,41,42", true));
     }
     @GetMapping("/delete")
     public void deleteSector() {

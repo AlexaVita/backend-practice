@@ -16,17 +16,17 @@
         INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type) VALUES(#{sectorId},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type});
     </insert>
 
-    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Operation">
+    <update id="update" parameterType="com.practice.backend.model.Operation">
         UPDATE operation
-        SET sector_id = #{entity.sectorId},
-            date = #{entity.timestamp},
-            amount = #{entity.amount},
-            fee = #{entity.fee},
-            description = #{entity.description},
-            email = #{entity.email},
-            state = #{entity.state},
-            type = #{entity.type}
-        WHERE id = #{updatedId};
+        SET sector_id = #{sectorId},
+            date = #{timestamp},
+            amount = #{amount},
+            fee = #{fee},
+            description = #{description},
+            email = #{email},
+            state = #{state},
+            type = #{type}
+        WHERE id = #{id};
     </update>
 
     <delete id="delete">

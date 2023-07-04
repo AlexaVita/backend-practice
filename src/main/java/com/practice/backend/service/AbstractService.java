@@ -26,7 +26,7 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
         mapper.insert(entity);
     }
 
-    public void update(Long updatedId, EntityType entity) {
-        mapper.update(updatedId, entity);
+    public void update(EntityType entity) {
+        mapper.update(entity);
     }
 }

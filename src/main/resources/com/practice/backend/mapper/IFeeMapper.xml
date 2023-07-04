@@ -16,14 +16,14 @@
         INSERT INTO fee(sector_id,paymentsystem,percent,fix,notless) VALUES(#{sectorId},#{paymentSystem},#{percent},#{fix},#{notLess});
     </insert>
 
-    <update id="update" keyProperty="entity.id" useGeneratedKeys="true" parameterType="com.practice.backend.model.Fee">
+    <update id="update" parameterType="com.practice.backend.model.Fee">
         UPDATE fee
-        SET sector_id = #{entity.sectorId},
-            paymentsystem = #{entity.paymentSystem},
-            percent = #{entity.percent},
-            fix = #{entity.fix},
-            notless = #{entity.notLess}
-        WHERE id = #{updatedId};
+        SET sector_id = #{sectorId},
+            paymentsystem = #{paymentSystem},
+            percent = #{percent},
+            fix = #{fix},
+            notless = #{notLess}
+        WHERE id = #{id};
     </update>
 
     <delete id="delete">

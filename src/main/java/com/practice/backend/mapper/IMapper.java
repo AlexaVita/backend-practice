@@ -16,6 +16,6 @@ public interface IMapper<EntityType extends IGuapEntity> {
 
     void delete(Long id);
 
-    void update(Long updatedId, EntityType entity);
+    void update(EntityType entity);
 
 }
