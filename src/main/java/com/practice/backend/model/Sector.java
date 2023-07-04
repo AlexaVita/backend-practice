@@ -13,7 +13,7 @@ public class Sector implements IGuapEntity {
     @Pattern(regexp = "[\\p{Print}]{0,255}")
     private String signCode;
     private Boolean checkIp;
-    @Pattern(regexp = "[\\p{Print}]{0,255}")
+    @Pattern(regexp = "^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$")
     private String allowedIps;
 
     public Sector(Long id, String name, Boolean active, String signCode, Boolean checkIp, String allowedIps) {
