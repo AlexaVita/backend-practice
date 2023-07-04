@@ -13,19 +13,13 @@ public class SectorSettingsMap implements IGuapEntity {
     private String name;
     @Pattern(regexp = "[\\p{Print}]{0,255}")
     private String value;
-    private Boolean payment;
-    @Pattern(regexp = "[\\p{Print}]{0,255}")
-    private String binList;
-    private Boolean guapPay;
 
-    public SectorSettingsMap(Long id, Long sectorId, String name, String value, Boolean payment, String binList, Boolean guapPay) {
+
+    public SectorSettingsMap(Long id, Long sectorId, String name, String value) {
         this.id = id;
         this.sectorId = sectorId;
         this.name = name;
         this.value = value;
-        this.payment = payment;
-        this.binList = binList;
-        this.guapPay = guapPay;
     }
 
     @Override
@@ -61,30 +55,6 @@ public class SectorSettingsMap implements IGuapEntity {
         this.value = value;
     }
 
-    public Boolean getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Boolean payment) {
-        this.payment = payment;
-    }
-
-    public String getBinList() {
-        return binList;
-    }
-
-    public void setBinList(String binList) {
-        this.binList = binList;
-    }
-
-    public Boolean getGuapPay() {
-        return guapPay;
-    }
-
-    public void setGuapPay(Boolean guapPay) {
-        this.guapPay = guapPay;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -94,10 +64,7 @@ public class SectorSettingsMap implements IGuapEntity {
         return Objects.equals(id, that.id) &&
                 Objects.equals(sectorId, that.sectorId) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(value, that.value) &&
-                Objects.equals(payment, that.payment) &&
-                Objects.equals(binList, that.binList) &&
-                Objects.equals(guapPay, that.guapPay);
+                Objects.equals(value, that.value);
     }
 
     @Override
@@ -107,9 +74,6 @@ public class SectorSettingsMap implements IGuapEntity {
                 ", sectorId=" + sectorId +
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
-                ", payment=" + payment +
-                ", binList='" + binList + '\'' +
-                ", guapPay=" + guapPay +
                 '}';
         }
     }

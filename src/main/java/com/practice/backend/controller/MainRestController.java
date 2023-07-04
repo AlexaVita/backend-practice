@@ -54,11 +54,11 @@ public class MainRestController {
     @GetMapping("/insert")
     public void addSector(@RequestParam(name = "name") String name) {
         // Просто тест, нужно переделать на RequestBody
-        sectorSettingsMapService.insert(new SectorSettingsMap(4L, 2L, name, "4", true, "23,41,42", true));
+        sectorSettingsMapService.insert(new SectorSettingsMap(4L, 2L, name, "4"));
     }
     @GetMapping("/update")
     public void updateSector() {
-        sectorSettingsMapService.update(new SectorSettingsMap(4L, 2L, "GIGIGIGIGIGI", "4", true, "23,41,42", true));
+        sectorSettingsMapService.update(new SectorSettingsMap(4L, 2L, "GIGIGIGIGIGI", "4"));
     }
     @GetMapping("/delete")
     public void deleteSector() {
