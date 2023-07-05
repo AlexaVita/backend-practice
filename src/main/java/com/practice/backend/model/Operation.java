@@ -118,6 +118,10 @@ public class Operation implements IGuapEntity {
 
     private OperationTypes type;
 
+
+    @Pattern(regexp = "\\d{6}[*]{6}\\d{4}")
+    private String pan_mask;
+
     @Override
     public String toString() {
         return "SectorDto{" +
