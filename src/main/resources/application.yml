@@ -1,5 +1,8 @@
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 3
   servlet:
     context-path: /api
 logging:
