@@ -4,6 +4,8 @@ public enum PaymentExceptionCodes {
 
     INVALID_SIGNATURE,
 
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+
+    INVALID_CARD
 
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +52,31 @@ public class PaymentUtil {
         if (!countedSignature.equals(signature)) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_SIGNATURE, userUUID, "Неверная сигнатура");
         }
+    }
+
+    public static void checkPan(UUID uuid, String pan) throws PaymentException {
+        //превращаем строку в массив чисел
+        String[] strArr = pan.split("");
+        int[] digits = Arrays.stream(strArr).mapToInt(Integer::parseInt).toArray();
+        //проверка на бизнес-требования
+        if (digits.length < 16 || digits.length > 19 || (digits[0] != 2 && digits[0] != 4 && digits[0] != 5))
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+        //алгоритм Луна
+        int sum = 0;
+        int parity = digits.length % 2;
+        for (int i = 0; i <= digits.length - 1; i++) {
+
+            if (i % 2 == parity) {
+                digits[i] = digits[i] * 2;
+                if (digits[i] > 9)
+                    digits[i] = digits[i] - 9;
+            }
+            sum += digits[i];
+        }
+        if (sum % 10 != 0) {
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+        }
+
     }
 
     private static byte[] convertThroughSHA256(String initialString) throws NoSuchAlgorithmException {

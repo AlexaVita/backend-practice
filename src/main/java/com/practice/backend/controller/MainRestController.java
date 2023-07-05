@@ -39,7 +39,8 @@ public class MainRestController {
 
 
     @GetMapping("/numbers")
-    public List<Example> getNumbers() {
+    public List<Example> getNumbers(@RequestAttribute("userUUID") UUID userUUID) {
+
         return exampleMapper.getAll();
     }
 
