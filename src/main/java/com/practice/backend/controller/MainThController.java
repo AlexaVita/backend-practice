@@ -52,7 +52,6 @@ public class MainThController {
             logger.info(e.getMessage());
         }
 
-
         model.addAttribute("sec", sec);
 
 
