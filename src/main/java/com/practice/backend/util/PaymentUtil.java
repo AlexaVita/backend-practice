@@ -18,42 +18,6 @@ import java.util.stream.Stream;
 @Service
 public class PaymentUtil {
 
-    public void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
-        // Берём сигнатуру из реквест-параметра
-        String signature = (String) request.getAttribute("signature");
-
-        StringBuilder signatureBuilder = new StringBuilder();
-
-        for (String paramName : paymentParamsNames) {
-            Object requestParam = request.getAttribute(paramName);
-
-            if (requestParam == null) {
-                requestParam = "";
-            }
-            // По списку имён аттрибутов получаем значения параметров из запроса
-            signatureBuilder.append((String) requestParam);
-        }
-
-        String password = paymentSector.getSignCode();
-
-        // Последним в сигнатуре добавляется SignCode сектора
-        signatureBuilder.append(password);
-
-        String countedSignature;
-
-        try {
-            // Результат - конвертация в строку через Base64 результата конвертации начальной строки через SHA256 в массив байтов
-            countedSignature = convertThroughBase64(convertThroughSHA256(signatureBuilder.toString()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
-        }
-
-        // Если начальная сигнатура и конечная не совпадают, то прокидываем исключение
-        if (!countedSignature.equals(signature)) {
-            throw new PaymentException(PaymentExceptionCodes.INVALID_SIGNATURE, userUUID, "Неверная сигнатура");
-        }
-    }
-
     public void checkPan(UUID uuid, String pan) throws PaymentException {
         //превращаем строку в массив чисел + проверка чтобы все были цифрами
         if (!pan.matches("\\d+")) {
@@ -103,6 +67,48 @@ public class PaymentUtil {
         int end = pan.length() - 4;
         // Итоговая строка - первые 6 символов + маска (любые символы ["."] между на *) + последние 4 символа
         return pan.substring(0, start) + pan.substring(start, end).replaceAll(".", mask) + pan.substring(end);
+    }
+
+    /** Проверяет соответствие пересчитанной сигнатуры и входящей в запрос сигнатуры */
+    public void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
+        String countedSignature = getEncodedSignature(request, userUUID, paymentSector, paymentParamsNames);
+        String initialSignature = (String) request.getAttribute("signature");
+
+        // Если начальная сигнатура и конечная не совпадают, то прокидываем исключение
+        if (!countedSignature.equals(initialSignature)) {
+            throw new PaymentException(PaymentExceptionCodes.INVALID_SIGNATURE, userUUID, "Неверная сигнатура");
+        }
+    }
+
+    /** Возвращает закодированную сигнатуру как SHA256 -> Base64 */
+    public String getEncodedSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
+        try {
+            String initialSignature = buildSignature(request, paymentSector.getSignCode(), paymentParamsNames);
+            // Результат - конвертация в строку через Base64 результата конвертации начальной строки через SHA256 в массив байтов
+            return convertThroughBase64(convertThroughSHA256(initialSignature));
+        } catch (NoSuchAlgorithmException e) {
+            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
+        }
+    }
+
+    /** Высчитывает сигнатуру на основе запроса, signCode и списка имён параметров */
+    private String buildSignature(HttpServletRequest request, String signCode, List<String> paymentParamsNames) {
+        StringBuilder signatureBuilder = new StringBuilder();
+
+        for (String paramName : paymentParamsNames) {
+            Object requestParam = request.getAttribute(paramName);
+
+            if (requestParam == null) {
+                requestParam = "";
+            }
+            // По списку имён аттрибутов получаем значения параметров из запроса
+            signatureBuilder.append((String) requestParam);
+        }
+
+        // Последним в сигнатуре добавляется SignCode сектора
+        signatureBuilder.append(signCode);
+
+        return signatureBuilder.toString();
     }
 
     private byte[] convertThroughSHA256(String initialString) throws NoSuchAlgorithmException {
