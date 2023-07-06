@@ -20,4 +20,10 @@ public class MainThController {
         return "hello_world";
     }
 
+    @GetMapping("/Payment")
+    public String getPayment(Model model, @RequestParam String sector, @RequestParam String amount, @RequestParam String desc) {
+
+        return "payment";
+    }
+
 }
