@@ -41,7 +41,8 @@ CREATE TABLE Operation(
 	description varchar(512),
 	email varchar(128),
 	state varchar(64),
-	type varchar(64)
+	type varchar(64),
+    pan_mask varchar(32); --?
 );
 
 CREATE INDEX idx_date ON Operation (date);

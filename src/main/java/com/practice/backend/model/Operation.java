@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class Operation implements IGuapEntity {
     public Operation(@NotNull Long id, @NotNull Long sectorId, @NotNull Timestamp timestamp, Long amount, Long fee,
-                     String description, String email, OperationStates state, OperationTypes type) {
+                     String description, String email, OperationStates state, OperationTypes type, String pan_mask) {
         this.id = id;
         this.sectorId = sectorId;
         this.timestamp = timestamp;
@@ -20,6 +20,7 @@ public class Operation implements IGuapEntity {
         this.email = email;
         this.state = state;
         this.type = type;
+        this.pan_mask = pan_mask;
     }
 
     public void setId(Long id) {
@@ -90,6 +91,10 @@ public class Operation implements IGuapEntity {
         this.type = type;
     }
 
+    public String getPan_mask() { return pan_mask; }
+
+    public void setPan_mask(String pan_mask) { this.pan_mask = pan_mask; }
+
     /*id bigserial PRIMARY KEY,
             sector_id bigint,
             date timestamp,
@@ -134,6 +139,7 @@ public class Operation implements IGuapEntity {
                 ", email=" + email +
                 ", state='" + state + '\'' +
                 ", type=" + type +
+                ", pan_mask=" + pan_mask +
                 '}';
     }
 
@@ -150,7 +156,8 @@ public class Operation implements IGuapEntity {
                 Objects.equals(description, operationDto.description) &&
                 Objects.equals(email, operationDto.email) &&
                 Objects.equals(state, operationDto.state) &&
-                Objects.equals(type, operationDto.type);
+                Objects.equals(type, operationDto.type) &&
+                Objects.equals(pan_mask, operationDto.type);
     }
 
     @Override
