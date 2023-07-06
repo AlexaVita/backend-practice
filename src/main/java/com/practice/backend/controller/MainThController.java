@@ -1,7 +1,9 @@
 package com.practice.backend.controller;
 
 import com.practice.backend.exception.PaymentException;
+import com.practice.backend.logging.Logging;
 import com.practice.backend.model.Sector;
+import com.practice.backend.service.CheckService;
 import com.practice.backend.service.SectorService;
 import com.practice.backend.util.PaymentUtil;
 import org.slf4j.Logger;
@@ -21,11 +23,9 @@ import java.util.UUID;
 @Controller
 public class MainThController {
     @Autowired
-    PaymentUtil paymentUtil;
+    CheckService checkService;
     @Autowired
     SectorService sectorService;
-
-    Logger logger = LoggerFactory.getLogger(MainThController.class);
 
     /**
      * Запрос '/api/hello' возвращает hello_world.html с дефолтным текстом "Hello World!",
@@ -40,25 +40,26 @@ public class MainThController {
 
     @GetMapping("/Payment")
     public String getPayment(@RequestAttribute(name = "userUUID") UUID userUUID, HttpServletRequest requestBody, Model model) {
-
-        Long sec = Long.valueOf(requestBody.getParameter("sec"));
+        // Получаем основные параметры из запроса
+        Long sectorId = Long.valueOf(requestBody.getParameter("sectorId"));
         Double amount = Double.valueOf(Integer.valueOf(requestBody.getParameter("amount")));
         String desc = requestBody.getParameter("desc");
 
-        Sector sector = sectorService.getById(sec);
 
+        Sector sector = sectorService.getById(sectorId);
+
+        // Если не экшн-пэй
         if (requestBody.getParameter("action") == null || !requestBody.getParameter("action").equals("pay")) {
             //logger.info(requestBody.getParameter("action"));
 
 
             try {
-                paymentUtil.checkIp(requestBody.getRemoteAddr(), userUUID, sector);
-                paymentUtil.checkActive(userUUID, sector);
+                // Проверяем сектор на активность -> Проверяем Ip -> Высчитываем сигнатуру
+                List<String> paymentParamsNames = Arrays.asList("sectorId", "amount", "desc");
+                String encodedSignature = checkService.checkIpAndSectorActiveAndGetEncodedSignature(requestBody, userUUID, sector, paymentParamsNames);
 
-                List<String> paymentParamsNames = Arrays.asList("sec", "amount", "desc");
-                String encodedSignature = paymentUtil.getEncodedSignature(requestBody, userUUID, sector, paymentParamsNames);
-
-                model.addAttribute("sec", sec);
+                // Заполняем модель, в т.ч. закидываем высчитанную сигнатуру
+                model.addAttribute("sectorId", sectorId);
                 model.addAttribute("amount", amount);
                 model.addAttribute("desc", desc);
 
@@ -66,24 +67,20 @@ public class MainThController {
                 model.addAttribute("signature", encodedSignature);
 
             } catch (PaymentException e) {
-                logger.info(e.getMessage());
+                Logging.info("getPayment(userUUID = " + userUUID + ')', e.getMessage());
             }
         } else {
-            logger.info("pay");
-            logger.info("controller "+requestBody.getParameter("signature"));
+            Logging.info("getPayment(userUUID = " + userUUID + ")", "pay");
+            Logging.info("controller", requestBody.getParameter("signature"));
             try {
-
-                paymentUtil.checkIp(requestBody.getRemoteAddr(), userUUID, sector);
-                paymentUtil.checkActive(userUUID, sector);
-
-                List<String> paymentParamsNames = Arrays.asList("sec", "amount", "desc");
-                paymentUtil.checkSignature(requestBody, userUUID, sector, paymentParamsNames);
+                // Если экшн-пэй, то проверяем сектор на активность -> Проверяем Ip -> Проверяем сигнатуру
+                List<String> paymentParamsNames = Arrays.asList("sectorId", "amount", "desc");
+                checkService.checkAll(requestBody, userUUID, sector, paymentParamsNames);
 
                 return "redirect:/notifySubmitter";
             } catch (PaymentException e) {
-                logger.info(e.getMessage());
+                Logging.info("getPayment(userUUID = " + userUUID + ')', e.getMessage());
             }
-
         }
 
         return "payment";
