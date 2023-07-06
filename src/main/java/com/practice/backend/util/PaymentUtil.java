@@ -1,8 +1,11 @@
 package com.practice.backend.util;
 
+import com.practice.backend.controller.MainThController;
 import com.practice.backend.enums.PaymentExceptionCodes;
 import com.practice.backend.exception.PaymentException;
 import com.practice.backend.model.Sector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,8 @@ import java.util.stream.Stream;
 
 @Service
 public class PaymentUtil {
+
+    Logger logger = LoggerFactory.getLogger(MainThController.class);
 
     public void checkPan(UUID uuid, String pan) throws PaymentException {
         //превращаем строку в массив чисел + проверка чтобы все были цифрами
@@ -61,6 +66,12 @@ public class PaymentUtil {
         }
     }
 
+    public void checkActive(UUID userUUID, Sector paymentSector) throws PaymentException {
+        if (paymentSector.getActive()!=true) {
+            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
+        }
+    }
+
     public String getPanMask(String pan) {
         // По правилу 6 в начале, 4 в конце
         String mask = "*";
@@ -73,7 +84,9 @@ public class PaymentUtil {
     /** Проверяет соответствие пересчитанной сигнатуры и входящей в запрос сигнатуры */
     public void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
         String countedSignature = getEncodedSignature(request, userUUID, paymentSector, paymentParamsNames);
-        String initialSignature = (String) request.getAttribute("signature");
+        String initialSignature = (String) request.getParameter("signature");
+        logger.info("counted "+countedSignature);
+        logger.info("from controller "+initialSignature);
 
         // Если начальная сигнатура и конечная не совпадают, то прокидываем исключение
         if (!countedSignature.equals(initialSignature)) {
@@ -97,7 +110,7 @@ public class PaymentUtil {
         StringBuilder signatureBuilder = new StringBuilder();
 
         for (String paramName : paymentParamsNames) {
-            Object requestParam = request.getAttribute(paramName);
+            Object requestParam = request.getParameter(paramName);
 
             if (requestParam == null) {
                 requestParam = "";
