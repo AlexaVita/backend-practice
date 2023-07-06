@@ -6,6 +6,8 @@ public enum PaymentExceptionCodes {
 
     INTERNAL_ERROR,
 
-    INVALID_CARD
+    INVALID_CARD,
+
+    INACTIVE_SECTOR
 
 }
