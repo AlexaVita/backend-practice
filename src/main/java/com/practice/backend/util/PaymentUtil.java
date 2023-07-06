@@ -86,11 +86,12 @@ public class PaymentUtil {
 
     }
 
-    public void checkIp(HttpServletRequest request, UUID userUUID, Sector paymentSector) throws PaymentException {
+    public void checkIp(String remoteAddr, UUID userUUID, Sector paymentSector) throws PaymentException {
         if (paymentSector.getCheckIp()) {
             String allowedIps = paymentSector.getAllowedIps();
             // Если IP из реквеста не содержится в строке allowedIps экземпляра класса Sector, то кидаем "абстрактную" ошибку
-            if (!allowedIps.contains(request.getRemoteAddr())) {
+            //if (!allowedIps.contains(request.getRemoteAddr())) {
+            if (allowedIps!=null && !allowedIps.contains(remoteAddr)) {
                 throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
             }
         }
