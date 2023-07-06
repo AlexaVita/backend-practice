@@ -3,6 +3,7 @@ package com.practice.backend.util;
 import com.practice.backend.enums.PaymentExceptionCodes;
 import com.practice.backend.exception.PaymentException;
 import com.practice.backend.model.Sector;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -14,9 +15,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+@Service
 public class PaymentUtil {
 
-    public static void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
+    public void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
         // Берём сигнатуру из реквест-параметра
         String signature = (String) request.getAttribute("signature");
 
@@ -52,7 +54,7 @@ public class PaymentUtil {
         }
     }
 
-    public static void checkPan(UUID uuid, String pan) throws PaymentException {
+    public void checkPan(UUID uuid, String pan) throws PaymentException {
         //превращаем строку в массив чисел + проверка чтобы все были цифрами
         if (!pan.matches("\\d+")) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
@@ -84,7 +86,7 @@ public class PaymentUtil {
 
     }
 
-    public static void checkIp(HttpServletRequest request, UUID userUUID, Sector paymentSector) throws PaymentException {
+    public void checkIp(HttpServletRequest request, UUID userUUID, Sector paymentSector) throws PaymentException {
         if (paymentSector.getCheckIp()) {
             String allowedIps = paymentSector.getAllowedIps();
             // Если IP из реквеста не содержится в строке allowedIps экземпляра класса Sector, то кидаем "абстрактную" ошибку
@@ -94,7 +96,7 @@ public class PaymentUtil {
         }
     }
 
-    public static String getPanMask(String pan) {
+    public String getPanMask(String pan) {
         // По правилу 6 в начале, 4 в конце
         String mask = "*";
         int start = 6;
@@ -103,12 +105,12 @@ public class PaymentUtil {
         return pan.substring(0, start) + pan.substring(start, end).replaceAll(".", mask) + pan.substring(end);
     }
 
-    private static byte[] convertThroughSHA256(String initialString) throws NoSuchAlgorithmException {
+    private byte[] convertThroughSHA256(String initialString) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         return digest.digest(initialString.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String convertThroughBase64(byte[] encodedHash) {
+    private String convertThroughBase64(byte[] encodedHash) {
         return Base64.getEncoder().encodeToString(encodedHash);
     }
 
