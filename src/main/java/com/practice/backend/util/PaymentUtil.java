@@ -37,7 +37,13 @@ public class PaymentUtil {
         //проверка на бизнес-требования
         if (digits.length < 16 || digits.length > 19 || (digits[0] != 2 && digits[0] != 4 && digits[0] != 5))
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+
         //алгоритм Луна
+        algLuhn(digits, uuid);
+    }
+
+    // Алгоритм Луна
+    public void algLuhn(int[] digits, UUID uuid) throws PaymentException {
         int sum = 0;
         int parity = digits.length % 2;
         for (int i = 0; i <= digits.length - 1; i++) {
@@ -52,11 +58,10 @@ public class PaymentUtil {
         if (sum % 10 != 0) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
         }
-
     }
 
     public void checkIp(String remoteAddr, UUID userUUID, Sector paymentSector) throws PaymentException {
-        if (paymentSector.getCheckIp()) {
+        if (Boolean.TRUE.equals(paymentSector.getCheckIp())) {
             String allowedIps = paymentSector.getAllowedIps();
             // Если IP из реквеста не содержится в строке allowedIps экземпляра класса Sector, то кидаем "абстрактную" ошибку
             //if (!allowedIps.contains(request.getRemoteAddr())) {
@@ -67,7 +72,7 @@ public class PaymentUtil {
     }
 
     public void checkActive(UUID userUUID, Sector paymentSector) throws PaymentException {
-        if (paymentSector.getActive()!=true) {
+        if (!Boolean.TRUE.equals(paymentSector.getActive())) {
             throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
         }
     }
