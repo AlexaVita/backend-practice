@@ -1,7 +1,7 @@
 package com.practice.backend.mapper;
 
 
-import com.practice.backend.model.Operation;
+import com.practice.backend.dao.model.Operation;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

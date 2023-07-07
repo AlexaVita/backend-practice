@@ -1,4 +1,4 @@
-package com.practice.backend.model;
+package com.practice.backend.dao.model;
 
 public class Example {
     private Integer id;

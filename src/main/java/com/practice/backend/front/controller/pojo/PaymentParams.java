@@ -1,12 +1,18 @@
-package com.practice.backend.controller.pojo;
+package com.practice.backend.front.controller.pojo;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 
 /** Содержит список параметров для платежа */
 public class PaymentParams {
 
+    @NonNull
     private Long sectorId;
 
+    @NonNull
     private Double amount;
 
+    @NonNull
     private String description;
 
     private Long fee;
@@ -17,15 +23,7 @@ public class PaymentParams {
 
     // enum currency (?) если нечем будет заняться
 
-    public PaymentParams(Long sectorId, Double amount, String description) {
-        this.sectorId = sectorId;
-        this.amount = amount;
-        this.description = description;
-        this.fee = 0L;
-        this.email = "";
-    }
-
-    public PaymentParams(Long sectorId, Double amount, String description, Long fee, String email) {
+    public PaymentParams(@NotNull Long sectorId, @NotNull Double amount, @NotNull String description, Long fee, String email) {
         this.sectorId = sectorId;
         this.amount = amount;
         this.description = description;
@@ -33,27 +31,27 @@ public class PaymentParams {
         this.email = email;
     }
 
-    public Long getSectorId() {
+    public @NotNull Long getSectorId() {
         return sectorId;
     }
 
-    public void setSectorId(Long sectorId) {
+    public void setSectorId(@NotNull Long sectorId) {
         this.sectorId = sectorId;
     }
 
-    public Double getAmount() {
+    public @NotNull Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(@NotNull Double amount) {
         this.amount = amount;
     }
 
-    public String getDescription() {
+    public @NotNull String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@NotNull String description) {
         this.description = description;
     }
 

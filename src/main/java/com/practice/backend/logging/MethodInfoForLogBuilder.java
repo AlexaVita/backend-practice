@@ -3,6 +3,8 @@ package com.practice.backend.logging;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.util.UUID;
+
 /** Для быстрого получения строки-описания вызываемого метода в виде:
  * classpath.methodName( argType argName = argValue, ... ) */
 public class MethodInfoForLogBuilder {
@@ -30,6 +32,10 @@ public class MethodInfoForLogBuilder {
 
         for (int i = 0; i < parametersTypes.length; i++) {
 
+            if (parametersTypes[i] == UUID.class) {
+                continue;
+            }
+
             String parameterType = parametersTypes[i].toString();
             // Отсечь всё кроме класса
             parameterType = parameterType.substring(parameterType.lastIndexOf('.') + 1);
@@ -47,6 +53,18 @@ public class MethodInfoForLogBuilder {
         methodInfo.append(')');
 
         return String.valueOf(methodInfo);
+    }
+
+    public Object getFieldFromMethod(String fieldName) {
+        String[] parametersNames = methodSignature.getParameterNames();
+
+        for (int i = 0; i < parametersNames.length; i++) {
+            if (parametersNames[i].equals(fieldName)) {
+                return methodArguments[i];
+            }
+        }
+
+        return null;
     }
 
 }

@@ -1,8 +1,9 @@
 package com.practice.backend.service;
 
+import com.practice.backend.dao.service.FeeService;
 import com.practice.backend.exception.EmptyTableException;
 import com.practice.backend.enums.PaymentSystem;
-import com.practice.backend.model.Fee;
+import com.practice.backend.dao.model.Fee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

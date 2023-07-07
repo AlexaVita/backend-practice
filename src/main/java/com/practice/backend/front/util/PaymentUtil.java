@@ -1,22 +1,22 @@
-package com.practice.backend.util;
+package com.practice.backend.front.util;
 
-import com.practice.backend.controller.MainThController;
+import com.practice.backend.front.controller.MainThController;
 import com.practice.backend.enums.PaymentExceptionCodes;
 import com.practice.backend.exception.PaymentException;
-import com.practice.backend.model.Sector;
+import com.practice.backend.dao.model.Sector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class PaymentUtil {
@@ -25,7 +25,11 @@ public class PaymentUtil {
 
     public void checkPan(UUID uuid, String pan) throws PaymentException {
         //превращаем строку в массив чисел + проверка чтобы все были цифрами
-        if (!pan.matches("\\d+")) {
+        if (pan == null) {
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+        }
+
+        if (!pan.matches("\\d+") || !(pan.startsWith("2") || pan.startsWith("4") || pan.startsWith("5"))) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
         }
 
@@ -34,10 +38,19 @@ public class PaymentUtil {
                 .mapToInt(Character::getNumericValue)
                 .toArray();
 
-        //проверка на бизнес-требования
-        if (digits.length < 16 || digits.length > 19 || (digits[0] != 2 && digits[0] != 4 && digits[0] != 5))
-            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
         //алгоритм Луна
+        try {
+            checkLuhnAlgorithm(digits);
+        } catch (PaymentException e) {
+            e.setUserUUID(uuid);
+            throw e;
+        }
+    }
+
+    public void checkLuhnAlgorithm(int[] digits) throws PaymentException {
+        if (digits.length < 16 || digits.length > 19)
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, "Неверно заполнена карта");
+
         int sum = 0;
         int parity = digits.length % 2;
         for (int i = 0; i <= digits.length - 1; i++) {
@@ -49,26 +62,24 @@ public class PaymentUtil {
             }
             sum += digits[i];
         }
-        if (sum % 10 != 0) {
-            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
-        }
 
+        if (sum % 10 != 0)
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, "Неверно заполнена карта");
     }
 
-    public void checkIp(String remoteAddr, UUID userUUID, Sector paymentSector) throws PaymentException {
-        if (paymentSector.getCheckIp()) {
+    public void checkIp(String remoteAddr, UUID uuid, Sector paymentSector) throws PaymentException {
+        if (Boolean.TRUE.equals(paymentSector.getCheckIp())) {
             String allowedIps = paymentSector.getAllowedIps();
             // Если IP из реквеста не содержится в строке allowedIps экземпляра класса Sector, то кидаем "абстрактную" ошибку
-            //if (!allowedIps.contains(request.getRemoteAddr())) {
             if (allowedIps!=null && !allowedIps.contains(remoteAddr)) {
-                throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
+                throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка");
             }
         }
     }
 
-    public void checkActive(UUID userUUID, Sector paymentSector) throws PaymentException {
-        if (paymentSector.getActive()!=true) {
-            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
+    public void checkActive(UUID uuid, Sector paymentSector) throws PaymentException {
+        if (Boolean.FALSE.equals(paymentSector.getActive())) {
+            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка");
         }
     }
 
@@ -82,26 +93,26 @@ public class PaymentUtil {
     }
 
     /** Проверяет соответствие пересчитанной сигнатуры и входящей в запрос сигнатуры */
-    public void checkSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
-        String countedSignature = getEncodedSignature(request, userUUID, paymentSector, paymentParamsNames);
+    public void checkSignature(HttpServletRequest request, UUID uuid, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
+        String countedSignature = getEncodedSignature(request, uuid, paymentSector, paymentParamsNames);
         String initialSignature = (String) request.getParameter("signature");
         logger.info("counted "+countedSignature);
         logger.info("from controller "+initialSignature);
 
         // Если начальная сигнатура и конечная не совпадают, то прокидываем исключение
         if (!countedSignature.equals(initialSignature)) {
-            throw new PaymentException(PaymentExceptionCodes.INVALID_SIGNATURE, userUUID, "Неверная сигнатура");
+            throw new PaymentException(PaymentExceptionCodes.INVALID_SIGNATURE, uuid, "Неверная сигнатура");
         }
     }
 
     /** Возвращает закодированную сигнатуру как SHA256 -> Base64 */
-    public String getEncodedSignature(HttpServletRequest request, UUID userUUID, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
+    public String getEncodedSignature(HttpServletRequest request, UUID uuid, Sector paymentSector, List<String> paymentParamsNames) throws PaymentException {
         try {
             String initialSignature = buildSignature(request, paymentSector.getSignCode(), paymentParamsNames);
             // Результат - конвертация в строку через Base64 результата конвертации начальной строки через SHA256 в массив байтов
             return convertThroughBase64(convertThroughSHA256(initialSignature));
         } catch (NoSuchAlgorithmException e) {
-            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, userUUID, "Внутренняя ошибка");
+            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка");
         }
     }
 

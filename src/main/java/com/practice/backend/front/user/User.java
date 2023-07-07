@@ -1,4 +1,4 @@
-package com.practice.backend.user;
+package com.practice.backend.front.user;
 
 import java.util.Objects;
 
