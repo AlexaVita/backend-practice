@@ -1,7 +1,7 @@
 package com.practice.backend.mapper;
 
 
-import com.practice.backend.model.IGuapEntity;
+import com.practice.backend.dao.model.IGuapEntity;
 
 import java.util.List;
 

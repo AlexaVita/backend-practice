@@ -1,4 +1,4 @@
-package com.practice.backend.model;
+package com.practice.backend.dao.model;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

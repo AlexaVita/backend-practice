@@ -1,24 +1,39 @@
 package com.practice.backend.logging;
 
 import java.text.MessageFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 /** Класс со статическими методами, предназначенными для логирования из любой точки проекта */
+@Component
 public class Logging {
+    private final Logger log;
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Logging.class);
+    public Logging() {
+        log = LoggerFactory.getLogger(Logging.class);
+    }
+
     /** Записывает в файл и консоль информацию о методе, его вызвавшем, и о сообщении */
-    public static void info(String methodInfo, String message) {
-        log.info(MessageFormat.format("Method ''{0}'': {1}", methodInfo, message));
+    public void info(UUID uuid, String methodInfo, String message) {
+        log.info(MessageFormat.format("Method ''{0}'', uuid = {2}: {1}", methodInfo, message, uuid));
     }
 
     /** Записывает в файл и консоль информацию о методе, его вызвавшем, и об предупреждении */
-    public static void warn(String methodInfo, String message) {
-        log.warn(MessageFormat.format("Warning in method ''{0}'': {1}", methodInfo, message));
+    public void warn(UUID uuid, String methodInfo, String message) {
+        log.warn(MessageFormat.format("Warning in method ''{0}'', uuid = {2}: {1}", methodInfo, message, uuid));
     }
 
     /** Записывает в файл и консоль информацию о методе, его вызвавшем, и сообщении об ошибке */
-    public static void error(String methodInfo, String message) {
-        log.error(MessageFormat.format("Error in method ''{0}'': {1}", methodInfo, message));
+    public void error(UUID uuid, String methodInfo, String message) {
+        log.error(MessageFormat.format("Error in method ''{0}'', uuid = {2}: {1}", methodInfo, message, uuid));
     }
+
+    public void debug(UUID uuid, String methodInfo, String message) {
+        log.debug(MessageFormat.format("Method ''{0}'', uuid = {2}: {1}", methodInfo, message, uuid));
+    }
+
 
 }

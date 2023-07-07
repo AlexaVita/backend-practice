@@ -8,18 +8,25 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /** Логика логирования, вынесенная как сквозная для проекта */
 @Component
 @Aspect
 public class LoggingAspect {
 
+    Logging logger = new Logging();
+
     @Around("Pointcuts.allControllersMethodsWithUUID()")
     public Object aroundAllMainControllerMethodsWithUUID(ProceedingJoinPoint proceedingJoinPoint) {
 
-        String methodInfo = new MethodInfoForLogBuilder(proceedingJoinPoint.getSignature(), proceedingJoinPoint.getArgs())
-                .buildMethodInfoForLog();
+        MethodInfoForLogBuilder methodInfoBuilder = new MethodInfoForLogBuilder(proceedingJoinPoint.getSignature(), proceedingJoinPoint.getArgs());
 
-        Logging.info(methodInfo, "request starts");
+        String methodInfo = methodInfoBuilder.buildMethodInfoForLog();
+
+        UUID uuid = (UUID) methodInfoBuilder.getFieldFromMethod("uuid");
+
+        logger.info(uuid, methodInfo, "request starts");
 
         Long startTime = System.currentTimeMillis();
 
@@ -28,13 +35,13 @@ public class LoggingAspect {
         try {
             result = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
-            Logging.error(methodInfo, e.getMessage());
+            logger.error(uuid, methodInfo, e.getMessage());
             throw new RuntimeException(e);
         }
 
         Long endTime = System.currentTimeMillis();
 
-        Logging.info(methodInfo, "request finished with success with result: " + result + " by " + (endTime - startTime) + " millis");
+        logger.info(uuid, methodInfo, "request finished with success with result: " + result + " by " + (endTime - startTime) + " millis");
 
         return result;
 

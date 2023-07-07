@@ -1,6 +1,6 @@
 package com.practice.backend.config;
 
-import com.practice.backend.user.User;
+import com.practice.backend.front.user.User;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -33,15 +33,15 @@ public class RequestUUIDInterceptor implements HandlerInterceptor {
 
         // Получаем UUID из HashMap
         // equals переписан таким образом, что пользователи считаются одинаковыми, если у них одинаковая сессия, или одинаковы Ip
-        UUID userUUID = users.get(user);
+        UUID uuid = users.get(user);
 
-        if (userUUID == null) {
+        if (uuid == null) {
             // Генерируем новый id и добавляем пользователя в HashMap, если его там не было
-            userUUID = UUID.randomUUID();
-            users.put(user, userUUID);
+            uuid = UUID.randomUUID();
+            users.put(user, uuid);
         }
 
-        request.setAttribute("userUUID", userUUID);
+        request.setAttribute("uuid", uuid);
 
         return true;
     }

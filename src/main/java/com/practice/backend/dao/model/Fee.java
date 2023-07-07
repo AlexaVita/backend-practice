@@ -1,4 +1,4 @@
-package com.practice.backend.model;
+package com.practice.backend.dao.model;
 
 import com.practice.backend.enums.PaymentSystem;
 import jakarta.validation.constraints.NotNull;

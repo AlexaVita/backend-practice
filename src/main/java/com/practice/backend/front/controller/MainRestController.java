@@ -1,11 +1,11 @@
-package com.practice.backend.controller;
+package com.practice.backend.front.controller;
 
 import com.practice.backend.mapper.ExampleMapper;
-import com.practice.backend.model.Example;
-import com.practice.backend.model.Sector;
-import com.practice.backend.model.SectorSettingsMap;
-import com.practice.backend.service.SectorService;
-import com.practice.backend.service.SectorSettingsMapService;
+import com.practice.backend.dao.model.Example;
+import com.practice.backend.dao.model.Sector;
+import com.practice.backend.dao.model.SectorSettingsMap;
+import com.practice.backend.dao.service.SectorService;
+import com.practice.backend.dao.service.SectorSettingsMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +33,19 @@ public class MainRestController {
 
 
     @GetMapping("/ping")
-    public String ping(@RequestAttribute("userUUID") UUID userUUID) {
+    public String ping(@RequestAttribute("uuid") UUID uuid) {
         return "pong";
     }
 
 
     @GetMapping("/numbers")
-    public List<Example> getNumbers(@RequestAttribute("userUUID") UUID userUUID) {
+    public List<Example> getNumbers(@RequestAttribute("uuid") UUID uuid) {
 
         return exampleMapper.getAll();
     }
 
     @GetMapping("/tom")
-    public String tom(@RequestAttribute("userUUID") UUID userUUID) {
+    public String tom(@RequestAttribute("uuid") UUID uuid) {
         logger.info("tom");
         try {
             Thread.sleep(10000);

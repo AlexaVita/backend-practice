@@ -1,9 +1,9 @@
-package com.practice.backend.util;
+package com.practice.backend.front.util;
 
-import com.practice.backend.controller.MainThController;
+import com.practice.backend.front.controller.MainThController;
 import com.practice.backend.enums.PaymentExceptionCodes;
 import com.practice.backend.exception.PaymentException;
-import com.practice.backend.model.Sector;
+import com.practice.backend.dao.model.Sector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class PaymentUtil {
@@ -25,7 +23,11 @@ public class PaymentUtil {
 
     public void checkPan(UUID uuid, String pan) throws PaymentException {
         //превращаем строку в массив чисел + проверка чтобы все были цифрами
-        if (!pan.matches("\\d+")) {
+        if (pan == null) {
+            throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+        }
+
+        if (!pan.matches("\\d+") || !(pan.startsWith("2") || pan.startsWith("4") || pan.startsWith("5"))) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
         }
 
@@ -34,9 +36,9 @@ public class PaymentUtil {
                 .mapToInt(Character::getNumericValue)
                 .toArray();
 
-        //проверка на бизнес-требования
-        if (digits.length < 16 || digits.length > 19 || (digits[0] != 2 && digits[0] != 4 && digits[0] != 5))
+        if (digits.length < 16 || digits.length > 19) {
             throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверно заполнена карта");
+        }
 
         //алгоритм Луна
         algLuhn(digits, uuid);

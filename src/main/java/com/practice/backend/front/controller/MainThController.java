@@ -1,13 +1,9 @@
-package com.practice.backend.controller;
+package com.practice.backend.front.controller;
 
+import com.practice.backend.front.controller.pojo.PaymentParams;
 import com.practice.backend.exception.PaymentException;
 import com.practice.backend.logging.Logging;
-import com.practice.backend.model.Sector;
-import com.practice.backend.service.CheckService;
-import com.practice.backend.service.SectorService;
-import com.practice.backend.util.PaymentUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.practice.backend.front.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +20,9 @@ import java.util.UUID;
 public class MainThController {
     @Autowired
     CheckService checkService;
+
     @Autowired
-    SectorService sectorService;
+    Logging logger;
 
     /**
      * Запрос '/api/hello' возвращает hello_world.html с дефолтным текстом "Hello World!",
@@ -33,53 +30,46 @@ public class MainThController {
      * которая теперь будет выводить "Hello MyName!"
      */
     @GetMapping("/hello")
-    public String hello(@RequestAttribute(name = "userUUID") UUID userUUID, @RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
+    public String hello(@RequestAttribute(name = "uuid") UUID uuid, @RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         model.addAttribute("name", name);
         return "hello_world";
     }
 
     @GetMapping("/Payment")
-    public String getPayment(@RequestAttribute(name = "userUUID") UUID userUUID, HttpServletRequest requestBody, Model model) {
+    public String getPayment(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody, PaymentParams paymentParams, Model model) {
         // Получаем основные параметры из запроса
-        Long sectorId = Long.valueOf(requestBody.getParameter("sectorId"));
-        Double amount = Double.valueOf(Integer.valueOf(requestBody.getParameter("amount")));
-        String desc = requestBody.getParameter("desc");
-
-
-        Sector sector = sectorService.getById(sectorId);
+        Long sectorId = paymentParams.getSectorId();
+        Double amount = paymentParams.getAmount();
+        String description = paymentParams.getDescription();
 
         // Если не экшн-пэй
-        if (requestBody.getParameter("action") == null || !requestBody.getParameter("action").equals("pay")) {
-            //logger.info(requestBody.getParameter("action"));
-
-
+        if (!"pay".equals(requestBody.getParameter("action"))) {
             try {
                 // Проверяем сектор на активность -> Проверяем Ip -> Высчитываем сигнатуру
                 List<String> paymentParamsNames = Arrays.asList("sectorId", "amount", "desc");
-                String encodedSignature = checkService.checkIpAndSectorActiveAndGetEncodedSignature(requestBody, userUUID, sector, paymentParamsNames);
+                String encodedSignature = checkService.checkIpAndSectorActiveAndGetEncodedSignature(requestBody, uuid, sectorId, paymentParamsNames);
 
                 // Заполняем модель, в т.ч. закидываем высчитанную сигнатуру
                 model.addAttribute("sectorId", sectorId);
                 model.addAttribute("amount", amount);
-                model.addAttribute("desc", desc);
+                model.addAttribute("desc", description);
 
-                model.addAttribute("name", sector.getName());
+                //model.addAttribute("name", sector.getName());
                 model.addAttribute("signature", encodedSignature);
 
             } catch (PaymentException e) {
-                Logging.info("getPayment(userUUID = " + userUUID + ')', e.getMessage());
+                logger.error(uuid, "getPayment(action != pay)", e.getMessage());
             }
         } else {
-            Logging.info("getPayment(userUUID = " + userUUID + ")", "pay");
-            Logging.info("controller", requestBody.getParameter("signature"));
+            logger.debug(uuid, "getPayment(action == pay)", "pay with signature");
             try {
                 // Если экшн-пэй, то проверяем сектор на активность -> Проверяем Ip -> Проверяем сигнатуру
                 List<String> paymentParamsNames = Arrays.asList("sectorId", "amount", "desc");
-                checkService.checkAll(requestBody, userUUID, sector, paymentParamsNames);
+                checkService.checkAll(requestBody, uuid, sectorId, paymentParamsNames);
 
                 return "redirect:/notifySubmitter";
             } catch (PaymentException e) {
-                Logging.info("getPayment(userUUID = " + userUUID + ')', e.getMessage());
+                logger.info(uuid, "getPayment(action == pay)", e.getMessage());
             }
         }
 
