@@ -24,4 +24,9 @@ public class PaymentException extends Exception {
                 "; userUUID=" + userUUID +
                 '}';
     }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage();
+    }
 }

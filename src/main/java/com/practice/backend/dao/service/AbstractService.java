@@ -1,6 +1,7 @@
 package com.practice.backend.dao.service;
 
 import com.practice.backend.dao.model.IGuapEntity;
+import com.practice.backend.exception.DatabaseException;
 import com.practice.backend.mapper.IMapper;
 
 import java.util.List;
@@ -10,12 +11,20 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
 
     protected TMapper mapper;
 
-    public List<EntityType> getAll() {
-        return mapper.getAll();
+    public List<EntityType> getAll() throws DatabaseException {
+        List<EntityType> entities = mapper.getAll();
+        if (entities == null) {
+            throw new DatabaseException("No entities in such table");
+        }
+        return entities;
     }
 
-    public EntityType getById(Long id) {
-        return mapper.getById(id);
+    public EntityType getById(Long id) throws DatabaseException {
+        EntityType entity = mapper.getById(id);
+        if (entity == null) {
+            throw new DatabaseException("No entity with such id in table");
+        }
+        return entity;
     }
 
     public void delete(Long id) {

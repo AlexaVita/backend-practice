@@ -54,12 +54,6 @@ public class MainRestController {
         }
         return "tom";
     }
-
-    @GetMapping("/getAllSectors")
-    public List<Sector> getAllSectors() {
-        return sectorService.getAll();
-    }
-
     @GetMapping("/insert")
     public void addSector(@RequestParam(name = "name") String name) {
         // Просто тест, нужно переделать на RequestBody
@@ -75,10 +69,4 @@ public class MainRestController {
     public void deleteSector() {
         sectorSettingsMapService.delete(2L);
     }
-
-    @GetMapping("/getSectorById")
-    public Sector getSectorById(@RequestParam(name = "id") Long id) {
-        return sectorService.getById(id);
-    }
-
 }

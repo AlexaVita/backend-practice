@@ -58,7 +58,8 @@ public class MainThController {
                 model.addAttribute("signature", encodedSignature);
 
             } catch (PaymentException e) {
-                logger.error(uuid, "getPayment(action != pay)", e.getMessage());
+                model.addAttribute("error", e);
+                return "error";
             }
         } else {
             logger.debug(uuid, "getPayment(action == pay)", "pay with signature");
@@ -69,7 +70,8 @@ public class MainThController {
 
                 return "redirect:/notifySubmitter";
             } catch (PaymentException e) {
-                logger.info(uuid, "getPayment(action == pay)", e.getMessage());
+                model.addAttribute("message", e);
+                return "error";
             }
         }
 
@@ -78,8 +80,8 @@ public class MainThController {
 
 
     @GetMapping("/notifySubmitter")
-    public String getNotify() {
-
+    public String getNotify(Model model) {
+        model.addAttribute("status", "success");
         return "notify";
     }
 

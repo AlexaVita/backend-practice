@@ -8,6 +8,8 @@ public enum PaymentExceptionCodes {
 
     INVALID_CARD,
 
-    INACTIVE_SECTOR
+    INACTIVE_SECTOR,
+
+    SECTOR_WAS_NOT_FOUND
 
 }

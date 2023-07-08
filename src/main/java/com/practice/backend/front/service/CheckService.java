@@ -1,5 +1,7 @@
 package com.practice.backend.front.service;
 
+import com.practice.backend.enums.PaymentExceptionCodes;
+import com.practice.backend.exception.DatabaseException;
 import com.practice.backend.exception.PaymentException;
 import com.practice.backend.dao.model.Sector;
 import com.practice.backend.front.util.PaymentUtil;
@@ -27,13 +29,23 @@ public class CheckService {
     }
 
     public void checkAll(HttpServletRequest request, UUID uuid, Long sectorId, List<String> paymentParamsNames) throws PaymentException {
-        Sector sector = sectorService.getById(sectorId);
+        Sector sector;
+        try {
+            sector = sectorService.getById(sectorId);
+        } catch (DatabaseException e) {
+            throw new PaymentException(PaymentExceptionCodes.SECTOR_WAS_NOT_FOUND, uuid, e.getMessage());
+        }
         checkIpAndSectorActive(request.getRemoteAddr(), uuid, sector);
         paymentUtil.checkSignature(request, uuid, sector, paymentParamsNames);
     }
 
     public String checkIpAndSectorActiveAndGetEncodedSignature(HttpServletRequest request, UUID uuid, Long sectorId, List<String> paymentParamsNames) throws PaymentException {
-        Sector sector = sectorService.getById(sectorId);
+        Sector sector;
+        try {
+            sector = sectorService.getById(sectorId);
+        } catch (DatabaseException e) {
+            throw new PaymentException(PaymentExceptionCodes.SECTOR_WAS_NOT_FOUND, uuid, e.getMessage());
+        }
         checkIpAndSectorActive(request.getRemoteAddr(), uuid, sector);
         return paymentUtil.getEncodedSignature(request, uuid, sector, paymentParamsNames);
     }
