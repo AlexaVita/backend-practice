@@ -58,7 +58,7 @@ public class MainRestController {
     @GetMapping("/broker2")
     public String broker2(@RequestAttribute("uuid") UUID uuid) throws ExecutionException, InterruptedException {
 
-        PaymentParams paymentParams = new PaymentParams(2L, 2.0, "working!", 2L, "sd@gmail.com");
+        PaymentParams paymentParams = new PaymentParams(2L, 200L, "working!", 2L, "sd@gmail.com", "22200000000000000000");
         ProducerRecord<String, PaymentParams> record = new ProducerRecord<>(requestTopic, null, paymentParams.getDescription(), paymentParams);
         RequestReplyFuture<String, PaymentParams, String> future = replyingKafkaTemplate.sendAndReceive(record);
         ConsumerRecord<String, String> response = future.get();
