@@ -1,10 +1,14 @@
 package com.practice.backend.front.controller;
 
-import com.practice.backend.front.controller.pojo.PaymentParams;
 import com.practice.backend.exception.PaymentException;
-import com.practice.backend.logging.Logging;
+import com.practice.backend.front.controller.pojo.PaymentParams;
 import com.practice.backend.front.service.CheckService;
+import com.practice.backend.logging.Logging;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +19,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class MainThController {
+
+    private String requestTopic = "paymentParams";
+
+    @Autowired
+    private ReplyingKafkaTemplate<String, PaymentParams, String> replyingKafkaTemplate;
+
+
     @Autowired
     CheckService checkService;
 
@@ -36,7 +48,17 @@ public class MainThController {
     }
 
     @GetMapping("/Payment")
-    public String getPayment(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody, PaymentParams paymentParams, Model model) {
+    public String getPayment(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody, PaymentParams paymentParams, Model model) throws ExecutionException, InterruptedException {
+
+        //PaymentParams paymentParams = new PaymentParams(2L, 2.0, "working!", 2L, "sd@gmail.com");
+        ProducerRecord<String, PaymentParams> record = new ProducerRecord<>(requestTopic, null, paymentParams.getDescription(), paymentParams);
+        RequestReplyFuture<String, PaymentParams, String> future = replyingKafkaTemplate.sendAndReceive(record);
+        ConsumerRecord<String, String> response = future.get();
+        logger.info(uuid, "f", response.value());
+        if (!response.value().equals("\"yes\""))
+            return "error";
+
+
         // Получаем основные параметры из запроса
         Long sectorId = paymentParams.getSectorId();
         Double amount = paymentParams.getAmount();
