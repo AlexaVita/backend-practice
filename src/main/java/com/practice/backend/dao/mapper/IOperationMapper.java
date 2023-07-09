@@ -1,4 +1,4 @@
-package com.practice.backend.mapper;
+package com.practice.backend.dao.mapper;
 
 
 import com.practice.backend.dao.model.Operation;

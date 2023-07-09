@@ -1,8 +1,7 @@
 package com.practice.backend.front.controller;
 
-import com.practice.backend.mapper.ExampleMapper;
+import com.practice.backend.dao.mapper.ExampleMapper;
 import com.practice.backend.dao.model.Example;
-import com.practice.backend.dao.model.Sector;
 import com.practice.backend.dao.model.SectorSettingsMap;
 import com.practice.backend.dao.service.SectorService;
 import com.practice.backend.dao.service.SectorSettingsMapService;

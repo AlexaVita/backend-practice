@@ -2,7 +2,7 @@ package com.practice.backend.dao.service;
 
 import com.practice.backend.dao.model.IGuapEntity;
 import com.practice.backend.exception.DatabaseException;
-import com.practice.backend.mapper.IMapper;
+import com.practice.backend.dao.mapper.IMapper;
 
 import java.util.List;
 

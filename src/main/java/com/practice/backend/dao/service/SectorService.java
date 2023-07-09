@@ -1,6 +1,6 @@
 package com.practice.backend.dao.service;
 
-import com.practice.backend.mapper.ISectorMapper;
+import com.practice.backend.dao.mapper.ISectorMapper;
 import com.practice.backend.dao.model.Sector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

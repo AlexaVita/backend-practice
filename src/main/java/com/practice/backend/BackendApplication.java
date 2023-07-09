@@ -5,7 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.practice.backend.mapper")
+@MapperScan("com.practice.backend.dao.mapper")
+
 public class BackendApplication {
 
 	public static void main(String[] args) {
