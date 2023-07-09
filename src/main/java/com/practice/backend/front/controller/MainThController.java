@@ -1,21 +1,32 @@
 package com.practice.backend.front.controller;
 
+import com.practice.backend.dao.model.Operation;
+import com.practice.backend.dao.service.OperationService;
+import com.practice.backend.enums.OperationStates;
+import com.practice.backend.enums.OperationTypes;
+import com.practice.backend.enums.PaymentExceptionCodes;
+import com.practice.backend.exception.DatabaseException;
 import com.practice.backend.exception.PaymentException;
 import com.practice.backend.front.controller.pojo.PaymentParams;
 import com.practice.backend.front.service.CheckService;
+import com.practice.backend.front.service.KafkaService;
 import com.practice.backend.logging.Logging;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.requestreply.KafkaReplyTimeoutException;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -24,17 +35,17 @@ import java.util.concurrent.ExecutionException;
 @Controller
 public class MainThController {
 
-    private String requestTopic = "paymentParams";
-
-    @Autowired
-    private ReplyingKafkaTemplate<String, PaymentParams, String> replyingKafkaTemplate;
-
-
     @Autowired
     CheckService checkService;
 
     @Autowired
+    OperationService operationService;
+
+    @Autowired
     Logging logger;
+
+    @Autowired
+    KafkaService kafkaService;
 
     /**
      * Запрос '/api/hello' возвращает hello_world.html с дефолтным текстом "Hello World!",
@@ -48,21 +59,15 @@ public class MainThController {
     }
 
     @GetMapping("/Payment")
-    public String getPayment(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody, PaymentParams paymentParams, Model model) throws ExecutionException, InterruptedException {
-
-        //PaymentParams paymentParams = new PaymentParams(2L, 2.0, "working!", 2L, "sd@gmail.com");
-        ProducerRecord<String, PaymentParams> record = new ProducerRecord<>(requestTopic, null, paymentParams.getDescription(), paymentParams);
-        RequestReplyFuture<String, PaymentParams, String> future = replyingKafkaTemplate.sendAndReceive(record);
-        ConsumerRecord<String, String> response = future.get();
-        logger.info(uuid, "f", response.value());
-        if (!response.value().equals("\"yes\""))
-            return "error";
-
+    public String getPayment(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody, PaymentParams paymentParams,
+                             RedirectAttributes redirectAttributes, Model model) throws ExecutionException, InterruptedException {
 
         // Получаем основные параметры из запроса
         Long sectorId = paymentParams.getSectorId();
-        Double amount = paymentParams.getAmount();
+        Long amount = paymentParams.getAmount();
         String description = paymentParams.getDescription();
+        Long fee = paymentParams.getFee();
+        String email = paymentParams.getEmail();
 
         // Если не экшн-пэй
         if (!"pay".equals(requestBody.getParameter("action"))) {
@@ -90,9 +95,60 @@ public class MainThController {
                 List<String> paymentParamsNames = Arrays.asList("sectorId", "amount", "desc");
                 checkService.checkAll(requestBody, uuid, sectorId, paymentParamsNames);
 
+                // Приложение с рандомом может заснуть на 20 секунд (если не ок). Мы можем увеличить время ожидания в application.yml,
+                // или просто оставить стандартные 5 секунд и обработку этого исключения
+                ConsumerRecord<String, String> response;
+                try {
+                    response = kafkaService.sendMessageAndWaitForResponse(paymentParams.getDescription(), paymentParams);
+                } catch (ExecutionException | InterruptedException e) {
+                    model.addAttribute("error", new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка"));
+                    return "error";
+                }
+
+                OperationStates status;
+
+                // Удалим все кавычки из ответа
+                String responseValue = response.value().replaceAll("\"", "");
+
+                // Если приложение нам дало неподходящий ответ, сообщаем об ошибке
+                try {
+                    status = OperationStates.valueOf(responseValue);
+                } catch (IllegalArgumentException e) {
+                    model.addAttribute("error", new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка: неверный статус операции"));
+                    return "error";
+                }
+
+                String panMask;
+
+                // Достаём номер карты, проверяем на null, проверяем номер, генерируем маску карты
+                try {
+                    String pan = paymentParams.getPan();
+
+                    if (pan == null) {
+                        throw new PaymentException(PaymentExceptionCodes.INVALID_CARD, uuid, "Неверная карта!");
+                    }
+
+                    panMask = checkService.checkPanAndGetMask(uuid, pan);
+                } catch (PaymentException e) {
+                    model.addAttribute("error", e);
+                    return "error";
+                }
+
+                fee = fee == null ? 0L : fee;
+                email = email == null ? "" : email;
+
+                Operation operation = new Operation(0L, sectorId, new Timestamp(System.currentTimeMillis()), amount,
+                        fee, description, email, status, OperationTypes.PAYMENT, panMask);
+
+                operationService.insert(operation);
+
+                logger.info(uuid, "getPayment(action == pay)", response.value());
+
+                redirectAttributes.addAttribute("status", responseValue);
+                redirectAttributes.addAttribute("operationId", operation.getId());
                 return "redirect:/notifySubmitter";
             } catch (PaymentException e) {
-                model.addAttribute("message", e);
+                model.addAttribute("error", e);
                 return "error";
             }
         }
@@ -102,8 +158,21 @@ public class MainThController {
 
 
     @GetMapping("/notifySubmitter")
-    public String getNotify(Model model) {
-        model.addAttribute("status", "success");
+    public String getNotify(@RequestParam(name = "status") String status, @RequestParam(name = "operationId") Long operationId, Model model) {
+        model.addAttribute("status", status);
+
+        Operation operation;
+
+        try {
+            operation = operationService.getById(operationId);
+        } catch (DatabaseException e) {
+            model.addAttribute("error", e);
+            return "error";
+        }
+
+        model.addAttribute("pan_mask", operation.getPan_mask());
+        model.addAttribute("operationId", operationId);
+
         return "notify";
     }
 

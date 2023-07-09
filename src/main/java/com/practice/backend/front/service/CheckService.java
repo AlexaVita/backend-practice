@@ -50,4 +50,9 @@ public class CheckService {
         return paymentUtil.getEncodedSignature(request, uuid, sector, paymentParamsNames);
     }
 
+    public String checkPanAndGetMask(UUID uuid, String pan) throws PaymentException {
+        paymentUtil.checkPan(uuid, pan);
+        return paymentUtil.getPanMask(pan);
+    }
+
 }
