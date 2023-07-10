@@ -14,8 +14,8 @@
 <body>
   <div class="center">
     <div class="notify center">
-      <span class="notify__emoji" th:text="${status == 'APPROVED' ? '🎉' : '😿'}">😿</span>
-      <p class="notify__message" th:text="${status == 'APPROVED' ? 'Оплата прошла успешно' : 'Не удалось оплатить'}">Не
+      <span class="notify__emoji" th:text="${notifyParams.getStatus() == 'APPROVED' ? '🎉' : '😿'}">😿</span>
+      <p class="notify__message" th:text="${notifyParams.getStatus() == 'APPROVED' ? 'Оплата прошла успешно' : 'Не удалось оплатить'}">Не
         удалось оплатить</p>
     </div>
   </div>
@@ -39,10 +39,10 @@
         <figure class="lock__icon">
           <img th:src="@{/assets/ic_lock.svg}" alt="lock__icon" />
         </figure>
-        <span class="secure__info" th:text="'Данные банковской карты ' + ${pan_mask}">будут переданы в защищённом виде</span>
+        <span class="secure__info" th:text="'Данные банковской карты ' + ${notifyParams.getPanMask()}">будут переданы в защищённом виде</span>
       </div>
 
-      <div class="footer__order" th:text="'Заказ номер ' + ${operationId}"></div>
+      <div class="footer__order" th:text="'Заказ номер (Бэк) ' + ${notifyParams.getOperationId()}"></div>
     </section>
   </div>
 </body>
