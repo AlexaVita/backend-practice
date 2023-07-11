@@ -32,6 +32,8 @@ public class KafkaConsumerService {
         String[] responses = {"APPROVED", "REJECTED", "FAILED", "TIMEOUT"};
         String response = responses[random.nextInt(responses.length)];
 
+        logger.info(String.format("Response is: %s", response));
+
         if ("TIMEOUT".equals(response)) {
             try {
                 Thread.sleep(20000);

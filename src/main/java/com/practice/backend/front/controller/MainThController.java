@@ -14,6 +14,7 @@ import com.practice.backend.front.service.KafkaService;
 import com.practice.backend.logging.Logging;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.requestreply.KafkaReplyTimeoutException;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
@@ -21,17 +22,12 @@ import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -137,11 +133,19 @@ public class MainThController {
 
                 operationService.insert(operation);
 
-                NotifyParams notifyParams = new NotifyParams(responseValue, operation.getId(), sectorId, amount, description, encodedSignature, null);
+                NotifyParams notifyParams = new NotifyParams(responseValue, operation.getId(), sectorId, null);
 
                 logger.info(uuid, "api/payment&action=pay", notifyParams.toString());
 
+                // Добавляем аттрибут в модель - параметры страницы notify
                 redirectAttributes.addFlashAttribute(notifyParams);
+                // Поскольку необходимо выполнять проверку входящих в requestBody параметров сигнатуры, их прокидываем через addAttribute();
+                Map<String, String> signatureParams = new HashMap<>();
+                signatureParams.put("sectorId", sectorId.toString());
+                signatureParams.put("amount", amount.toString());
+                signatureParams.put("description", description);
+                signatureParams.put("signature", encodedSignature);
+                redirectAttributes.mergeAttributes(signatureParams);
 
                 return "redirect:/notifySubmitter";
             } catch (PaymentException e) {
@@ -157,12 +161,14 @@ public class MainThController {
     public String getNotify(@RequestAttribute(name = "uuid") UUID uuid, HttpServletRequest requestBody,
                             NotifyParams notifyParams, Model model) {
 
-        // TODO проверка здесь сигнатуры, IP, активности сектора
         Operation operation;
 
         try {
+            // Проверка сигнатуры, IP, активности сектора
+            checkService.checkAll(requestBody, uuid, notifyParams.getSectorId(), paymentParamsNames);
+            // Берём операцию из БД
             operation = operationService.getById(notifyParams.getOperationId());
-        } catch (DatabaseException e) {
+        } catch (PaymentException | DatabaseException e) {
             model.addAttribute("error", e);
             return "error";
         }
