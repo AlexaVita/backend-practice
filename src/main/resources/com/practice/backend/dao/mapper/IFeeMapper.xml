@@ -12,6 +12,10 @@
         select * from fee where id = (#{id})
     </select>
 
+    <select id="getBySectorId">
+        select * from fee where sector_id = (#{sectorId})
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO fee(sector_id,paymentsystem,percent,fix,notless) VALUES(#{sectorId},#{paymentSystem},#{percent},#{fix},#{notLess});
     </insert>

@@ -13,7 +13,7 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type, pan_mask) VALUES(#{sectorId},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type},#{pan_mask});
+        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type,pan_mask,payment_system) VALUES(#{sectorId},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type},#{pan_mask},#{paymentSystem});
     </insert>
 
     <update id="update" parameterType="com.practice.backend.dao.model.Operation">
@@ -26,7 +26,8 @@
             email = #{email},
             state = #{state},
             type = #{type},
-            pan_mask = #{pan_mask}
+            pan_mask = #{pan_mask},
+            payment_system = #{paymentSystem}
         WHERE id = #{id};
     </update>
 

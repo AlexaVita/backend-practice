@@ -1,27 +1,29 @@
-//package com.practice.backend.service;
-//
-//import com.practice.backend.dao.service.FeeService;
-//import com.practice.backend.exception.DatabaseException;
-//import com.practice.backend.enums.PaymentSystem;
-//import com.practice.backend.dao.model.Fee;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//import java.util.ArrayList;
-//import java.util.Random;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//@SpringBootTest
-//class FeeServiceTest {
-//
-//    @Autowired
-//    FeeService feeServiceTest;
-//
-//    Random random = new Random();
-//    // Тестовая запись (если хотите добавить её несколько раз, то нужно менять sectorID или paymentSystem)
-//    Fee feeTest = new Fee(0L, 0L, PaymentSystem.MASTERCARD, "0.12", "10.0", "50");
+package com.practice.backend.service;
+
+import com.practice.backend.dao.service.FeeService;
+import com.practice.backend.dao.service.SectorService;
+import com.practice.backend.exception.DatabaseException;
+import com.practice.backend.enums.PaymentSystem;
+import com.practice.backend.dao.model.Fee;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+class FeeServiceTest {
+
+    @Autowired
+    FeeService feeServiceTest;
+
+    Random random = new Random();
+    // Тестовая запись (если хотите добавить её несколько раз, то нужно менять sectorID или paymentSystem)
+    Fee feeTest = new Fee(0L, 1L, PaymentSystem.VISA, "0.12", "10.0", "50");
 //
 //    @Test
 //    void insertAndGetLastShouldBeEqualInitialInsert() {
@@ -64,7 +66,7 @@
 //    }
 //
 //    @Test
-//    void deletedAnyEntityShouldNotBeInDB() {
+//    void deletedAnyEntityShouldNotBeInDB() throws DatabaseException {
 //
 //        // Просто удаляем рандомную запись и смотрим, чтобы её не было в БД
 //        Fee deletingFee;
@@ -112,26 +114,39 @@
 //        //assertFalse(getAllFees().contains(initial));
 //
 //    }
-//
-//    Fee getLastFee() throws DatabaseException {
-//        ArrayList<Fee> fees = getAllFees();
-//        if (fees.size() < 1) {
-//            throw new DatabaseException("Fee table is empty!");
-//        }
-//        return fees.get(fees.size() - 1);
-//    }
-//
-//
-//    ArrayList<Fee> getAllFees() {
-//        return (ArrayList<Fee>) feeServiceTest.getAll();
-//    }
-//
-//    Fee getRandomFee() throws DatabaseException {
-//        ArrayList<Fee> fees = getAllFees();
-//        if (fees.size() < 1) {
-//            throw new DatabaseException("Fee table is empty!");
-//        }
-//        return fees.get(random.nextInt(fees.size()));
-//    }
-//
-//}
+
+    @Test
+    void getBySectorIdShouldBeEqualInitial() {
+        feeServiceTest.insert(feeTest);
+
+        List<Fee> actual;
+
+        actual = feeServiceTest.getBySectorId(feeTest.getSectorId());
+
+        System.out.println(actual);
+
+        assertTrue(actual.contains(feeTest));
+    }
+
+    Fee getLastFee() throws DatabaseException {
+        ArrayList<Fee> fees = getAllFees();
+        if (fees.size() < 1) {
+            throw new DatabaseException("Fee table is empty!");
+        }
+        return fees.get(fees.size() - 1);
+    }
+
+
+    ArrayList<Fee> getAllFees() throws DatabaseException {
+        return (ArrayList<Fee>) feeServiceTest.getAll();
+    }
+
+    Fee getRandomFee() throws DatabaseException {
+        ArrayList<Fee> fees = getAllFees();
+        if (fees.size() < 1) {
+            throw new DatabaseException("Fee table is empty!");
+        }
+        return fees.get(random.nextInt(fees.size()));
+    }
+
+}

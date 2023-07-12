@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SectorSettingsMapService extends AbstractService<ISectorSettingsMapMapper, SectorSettingsMap> {
+public class SectorSettingsMapService extends AbstractServiceWithSectorId<ISectorSettingsMapMapper, SectorSettingsMap> {
 
     @Autowired
     public SectorSettingsMapService(ISectorSettingsMapMapper mapper) {

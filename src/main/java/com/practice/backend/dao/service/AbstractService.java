@@ -11,12 +11,8 @@ public abstract class AbstractService <TMapper extends IMapper<EntityType>, Enti
 
     protected TMapper mapper;
 
-    public List<EntityType> getAll() throws DatabaseException {
-        List<EntityType> entities = mapper.getAll();
-        if (entities == null) {
-            throw new DatabaseException("No entities in such table");
-        }
-        return entities;
+    public List<EntityType> getAll() {
+        return mapper.getAll();
     }
 
     public EntityType getById(Long id) throws DatabaseException {

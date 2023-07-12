@@ -42,7 +42,8 @@ CREATE TABLE Operation(
 	email varchar(128),
 	state varchar(64),
 	type varchar(64),
-    pan_mask varchar(32) --?
+    pan_mask varchar(32), --?
+	payment_system varchar(64) --Фронту нужен для админки (из Fee его не достать)
 );
 
 CREATE INDEX idx_date ON Operation (date);

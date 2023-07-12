@@ -12,6 +12,10 @@
         select * from sectorsettingsmap where id = (#{id})
     </select>
 
+    <select id="getBySectorId">
+        select * from sectorsettingsmap where sector_id = (#{sectorId})
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sectorsettingsmap(sector_id,name,value) VALUES(#{sectorId},#{name},#{value});
     </insert>

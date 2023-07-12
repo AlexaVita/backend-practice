@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FeeService extends AbstractService<IFeeMapper, Fee> {
+public class FeeService extends AbstractServiceWithSectorId<IFeeMapper, Fee> {
 
     @Autowired
     public FeeService(IFeeMapper mapper) {

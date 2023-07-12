@@ -2,6 +2,7 @@ package com.practice.backend.dao.model;
 
 import com.practice.backend.enums.OperationStates;
 import com.practice.backend.enums.OperationTypes;
+import com.practice.backend.enums.PaymentSystem;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -127,19 +128,23 @@ public class Operation implements IGuapEntity {
     @Pattern(regexp = "\\d{6}[*]{6}\\d{4}")
     private String pan_mask;
 
+    @NotNull
+    private PaymentSystem paymentSystem;
+
     @Override
     public String toString() {
-        return "SectorDto{" +
+        return "Operation{" +
                 "id=" + id +
-                ", sector_id='" + sectorId + '\'' +
+                ", sectorId=" + sectorId +
                 ", timestamp=" + timestamp +
-                ", amount='" + amount + '\'' +
+                ", amount=" + amount +
                 ", fee=" + fee +
                 ", description='" + description + '\'' +
-                ", email=" + email +
-                ", state='" + state + '\'' +
+                ", email='" + email + '\'' +
+                ", state=" + state +
                 ", type=" + type +
-                ", pan_mask=" + pan_mask +
+                ", pan_mask='" + pan_mask + '\'' +
+                ", paymentSystem=" + paymentSystem +
                 '}';
     }
 
@@ -157,11 +162,21 @@ public class Operation implements IGuapEntity {
                 Objects.equals(email, operationDto.email) &&
                 Objects.equals(state, operationDto.state) &&
                 Objects.equals(type, operationDto.type) &&
-                Objects.equals(pan_mask, operationDto.type);
+                Objects.equals(pan_mask, operationDto.pan_mask) &&
+                Objects.equals(paymentSystem, operationDto.paymentSystem);
     }
 
     @Override
     public Long getId() {
         return id;
+    }
+
+    @NotNull
+    public PaymentSystem getPaymentSystem() {
+        return paymentSystem;
+    }
+
+    public void setPaymentSystem(@NotNull PaymentSystem paymentSystem) {
+        this.paymentSystem = paymentSystem;
     }
 }

@@ -1,7 +1,8 @@
 package com.practice.backend.enums;
 
 public enum SectorSettingMapName {
-    binList,
-    payment,
-    guapPay
+    BIN_LIST,
+    PAYMENT,
+    SUAI_PAY,
+    SHOW_EMAIL
 }
