@@ -84,11 +84,6 @@ public class MainRestController {
         sectorSettingsMapService.insert(new SectorSettingsMap(4L, 2L, name, "4"));
     }
 
-    @GetMapping("/update")
-    public void updateSector() {
-        sectorSettingsMapService.update(new SectorSettingsMap(4L, 2L, "GIGIGIGIGIGI", "4"));
-    }
-
     @GetMapping("/delete")
     public void deleteSector() {
         sectorSettingsMapService.delete(2L);

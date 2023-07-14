@@ -1,4 +1,4 @@
-package com.practice.backend.config;
+package com.practice.backend.front.config;
 
 import com.practice.backend.front.user.User;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

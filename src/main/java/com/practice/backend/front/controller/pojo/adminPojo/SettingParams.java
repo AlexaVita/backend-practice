@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public class SettingsResponse {
+public class SettingParams {
 
     @NotNull
     boolean email;
@@ -15,7 +15,7 @@ public class SettingsResponse {
     @NotNull
     List<Commission> commissions;
 
-    public SettingsResponse(@NotNull boolean email, @NotNull boolean alternativePayment, @NotNull List<Commission> commissions) {
+    public SettingParams(@NotNull boolean email, @NotNull boolean alternativePayment, @NotNull List<Commission> commissions) {
         this.email = email;
         this.alternativePayment = alternativePayment;
         this.commissions = commissions;

@@ -1,4 +1,4 @@
-package com.practice.backend.config;
+package com.practice.backend.front.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +8,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.regex.Pattern;
 
 @Configuration
 @EnableWebSecurity
@@ -23,8 +28,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.
-                httpBasic()
+        http
+                .csrf()     // Отключаем csrf (можно вместо него навесить авторизацию на PUT & POST & DELETE запросы
+                .disable()
+                .httpBasic()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/hello").hasRole("ADMIN")

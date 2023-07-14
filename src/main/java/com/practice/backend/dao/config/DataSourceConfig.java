@@ -1,4 +1,4 @@
-package com.practice.backend.config;
+package com.practice.backend.dao.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
