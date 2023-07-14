@@ -13,12 +13,12 @@ public class SettingParams {
     boolean alternativePayment;
 
     @NotNull
-    List<Commission> commissions;
+    String storeLogo;
 
-    public SettingParams(@NotNull boolean email, @NotNull boolean alternativePayment, @NotNull List<Commission> commissions) {
+    public SettingParams(@NotNull boolean email, @NotNull boolean alternativePayment, @NotNull String storeLogo) {
         this.email = email;
         this.alternativePayment = alternativePayment;
-        this.commissions = commissions;
+        this.storeLogo = storeLogo;
     }
 
     @NotNull
@@ -40,11 +40,12 @@ public class SettingParams {
     }
 
     @NotNull
-    public List<Commission> getCommissions() {
-        return commissions;
+    public String getStoreLogo() {
+        return storeLogo;
     }
 
-    public void setCommissions(@NotNull List<Commission> commissions) {
-        this.commissions = commissions;
+    @NotNull
+    public void setStoreLogo(String storeLogo) {
+        this.storeLogo = storeLogo;
     }
 }

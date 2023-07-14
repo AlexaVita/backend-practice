@@ -2,11 +2,10 @@ package com.practice.backend.front.controller.pojo.adminPojo;
 
 import jakarta.validation.constraints.NotNull;
 
-public class Commission {
+public class CommissionParams {
 
     @NotNull
     Long id;
-
 
     @NotNull
     String paymentSystem;
@@ -15,9 +14,9 @@ public class Commission {
     Long minBet;
 
     @NotNull
-    Long fee; // Возможно подразумевается fix ???
+    Long fee; // У нас percent
 
-    public Commission(@NotNull Long id, @NotNull String paymentSystem, @NotNull Long minBet, @NotNull Long fee) {
+    public CommissionParams(@NotNull Long id, @NotNull String paymentSystem, @NotNull Long minBet, @NotNull Long fee) {
         this.id = id;
         this.paymentSystem = paymentSystem;
         this.minBet = minBet;

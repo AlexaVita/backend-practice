@@ -3,27 +3,26 @@ package com.practice.backend.front.controller;
 import com.practice.backend.dao.model.Fee;
 import com.practice.backend.dao.model.Operation;
 import com.practice.backend.dao.model.Sector;
-import com.practice.backend.dao.model.SectorSettingsMap;
 import com.practice.backend.dao.service.FeeService;
 import com.practice.backend.dao.service.OperationService;
 import com.practice.backend.dao.service.SectorService;
 import com.practice.backend.dao.service.SectorSettingsMapService;
 import com.practice.backend.enums.PaymentExceptionCodes;
+import com.practice.backend.enums.PaymentSystem;
 import com.practice.backend.enums.SectorSettingMapName;
 import com.practice.backend.exception.DatabaseException;
 import com.practice.backend.exception.PaymentException;
-import com.practice.backend.front.controller.pojo.adminPojo.Commission;
+import com.practice.backend.front.controller.pojo.adminPojo.CommissionParams;
 import com.practice.backend.front.controller.pojo.adminPojo.OrderResponse;
 import com.practice.backend.front.controller.pojo.adminPojo.SettingParams;
 import com.practice.backend.front.util.OperationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,8 +85,6 @@ public class AdminController {
         List<Sector> sectors = sectorService.getAll();
 
         for (Sector sector : sectors) {
-            List<SectorSettingsMap> settings = sectorSettingsMapService.getBySectorId(sector.getSectorId());
-            List<Commission> commissions = new ArrayList<>();
 
             boolean showEmail = sectorSettingsMapService.getSettingValueWithNameAndSectorId(
                     SectorSettingMapName.SHOW_EMAIL.name(), sector.getSectorId()).equals("true");
@@ -95,81 +92,115 @@ public class AdminController {
             boolean alternatePay = sectorSettingsMapService.getSettingValueWithNameAndSectorId(
                     SectorSettingMapName.SUAI_PAY.name(), sector.getSectorId()).equals("true");
 
-            List<Fee> fees = feeService.getBySectorId(sector.getSectorId());
+            String storeLogo = sectorSettingsMapService.getSettingValueWithNameAndSectorId(
+                    SectorSettingMapName.STORE_LOGO.name(), sector.getSectorId());
 
-            for (Fee fee : fees) {
-                commissions.add(new Commission(
-                        fee.getId(),
-                        fee.getPaymentSystem().name(),
-                        new BigDecimal(fee.getPercent()).longValue(), // процент
-                        new BigDecimal(fee.getNotLess()).longValue()  // не меньше
-                ));
-            }
 
             response.add(new SettingParams(
                     showEmail,
                     alternatePay,
-                    commissions
+                    storeLogo
             ));
         }
 
         return response;
     }
 
-    @PutMapping("/settings")
-    public void updateSetting(@RequestAttribute("uuid") UUID uuid, @RequestBody ArrayList<SettingParams> settingParams) throws PaymentException {
-        // Для каждой настройки, которую необходимо обновить
-        for (SettingParams requestSetting : settingParams) {
-            // Получаем список данных о комиссии
-            List<Commission> commissions = requestSetting.getCommissions();
+    // PUT не могу написать, потому что фронт не кидает sectorId
 
+    //@PutMapping("/settings")
+    //public void updateSetting(@RequestAttribute("uuid") UUID uuid, @RequestBody ArrayList<SettingParams> settingParams) throws PaymentException {
+    //    // Для каждой настройки, которую необходимо обновить
+    //    for (SettingParams requestSetting : settingParams) {
+    //        // Получаем список данных о комиссии
+    //        List<CommissionParams> commissionParams = requestSetting.getCommissions();
+//
+//
+    //        if (commissionParams.isEmpty()) {
+    //            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "В настройке нет информации о комиссии!");
+    //        }
+//
+    //        List<SectorSettingsMap> settingsFromDB;
+    //        Long sectorId;
+//
+    //        try {
+    //            // Из запроса получаем id любой из комиссий, берём её из БД
+    //            Fee fee = feeService.getById(commissionParams.get(0).getId());
+//
+    //            // Для комиссии находим id сектора, а по нему - sectorSettingsMap (для любой записи из запроса sectorId один и тот же
+    //            sectorId = fee.getSectorId();
+    //            settingsFromDB = sectorSettingsMapService.getBySectorId(sectorId);
+//
+    //        } catch (DatabaseException e) {
+    //            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "В настройке нет информации о комиссии!");
+    //        }
+//
+    //        boolean emailUpdated = false, alternatePayUpdated = false;
+//
+    //        for (SectorSettingsMap settingFromDB : settingsFromDB) {
+    //            if (SectorSettingMapName.SHOW_EMAIL.name().equals(settingFromDB.getName())) {
+    //                settingFromDB.setValue(String.valueOf(requestSetting.isEmail()));
+    //                emailUpdated = true;
+    //                continue;
+    //            }
+//
+    //            if (SectorSettingMapName.SUAI_PAY.name().equals(settingFromDB.getName())) {
+    //                settingFromDB.setValue(String.valueOf(requestSetting.isAlternativePayment()));
+    //                alternatePayUpdated = true;
+    //            }
+    //        }
+//
+    //        if (!emailUpdated) {
+    //            sectorSettingsMapService.insert(new SectorSettingsMap(0L,
+    //                    sectorId, SectorSettingMapName.SHOW_EMAIL.name(), String.valueOf(requestSetting.isEmail())));
+    //        }
+//
+    //        if (!alternatePayUpdated) {
+    //            sectorSettingsMapService.insert(new SectorSettingsMap(0L,
+    //                    sectorId, SectorSettingMapName.SUAI_PAY.name(), String.valueOf(requestSetting.isAlternativePayment())));
+    //        }
+//
+    //    }
+    //}
 
-            if (commissions.isEmpty()) {
-                throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "В настройке нет информации о комиссии!");
-            }
+    @GetMapping(value = "/commissions", produces = APPLICATION_JSON_VALUE)
+    public List<CommissionParams> getCommissions(@RequestAttribute("uuid") UUID uuid) throws PaymentException {
 
-            List<SectorSettingsMap> settingsFromDB;
-            Long sectorId;
+        List<CommissionParams> response = new ArrayList<>();
 
-            try {
-                // Из запроса получаем id любой из комиссий, берём её из БД
-                Fee fee = feeService.getById(commissions.get(0).getId());
+        List<Fee> fees = feeService.getAll();
 
-                // Для комиссии находим id сектора, а по нему - sectorSettingsMap (для любой записи из запроса sectorId один и тот же
-                sectorId = fee.getSectorId();
-                settingsFromDB = sectorSettingsMapService.getBySectorId(sectorId);
-
-            } catch (DatabaseException e) {
-                throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "В настройке нет информации о комиссии!");
-            }
-
-            boolean emailUpdated = false, alternatePayUpdated = false;
-
-            for (SectorSettingsMap settingFromDB : settingsFromDB) {
-                if (SectorSettingMapName.SHOW_EMAIL.name().equals(settingFromDB.getName())) {
-                    settingFromDB.setValue(String.valueOf(requestSetting.isEmail()));
-                    emailUpdated = true;
-                    continue;
-                }
-
-                if (SectorSettingMapName.SUAI_PAY.name().equals(settingFromDB.getName())) {
-                    settingFromDB.setValue(String.valueOf(requestSetting.isAlternativePayment()));
-                    alternatePayUpdated = true;
-                }
-            }
-
-            if (!emailUpdated) {
-                sectorSettingsMapService.insert(new SectorSettingsMap(0L,
-                        sectorId, SectorSettingMapName.SHOW_EMAIL.name(), String.valueOf(requestSetting.isEmail())));
-            }
-
-            if (!alternatePayUpdated) {
-                sectorSettingsMapService.insert(new SectorSettingsMap(0L,
-                        sectorId, SectorSettingMapName.SUAI_PAY.name(), String.valueOf(requestSetting.isAlternativePayment())));
-            }
-
+        for (Fee fee : fees) {
+            response.add(new CommissionParams(
+                    fee.getId(),
+                    fee.getPaymentSystem().name(),
+                    new BigDecimal(fee.getPercent()).longValue(), // процент
+                    new BigDecimal(fee.getNotLess()).longValue()  // не меньше
+            ));
         }
+
+        return response;
     }
+
+    @PutMapping( "/commissions")
+    public void insertCommission(@RequestAttribute("uuid") UUID uuid, @RequestBody CommissionParams newCommission) throws PaymentException {
+
+        try {
+            Fee newFee = feeService.getById(newCommission.getId());
+
+            newFee.setPercent(newCommission.getFee().toString());
+            newFee.setPaymentSystem(PaymentSystem.valueOf(newCommission.getPaymentSystem()));
+            newFee.setNotLess(newCommission.getMinBet().toString());
+
+            feeService.update(newFee);
+
+        } catch (DatabaseException | DuplicateKeyException e) {
+            throw new PaymentException(PaymentExceptionCodes.INTERNAL_ERROR, uuid, "Внутренняя ошибка БД. Ключ повторяется или не был найден");
+        }
+
+    }
+
+    // POST не могу написать, потому что фронт не кидает sector_id
 
 
     @ExceptionHandler({ PaymentException.class })

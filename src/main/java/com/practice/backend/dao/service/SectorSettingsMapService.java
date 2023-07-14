@@ -40,6 +40,7 @@ public class SectorSettingsMapService extends AbstractServiceWithSectorId<ISecto
         insert(newSetting);
     }
 
+    /** Ищет настройки сектора в таблице по их имени и id сектора, является NPE-safe, если в БД настройки нет, возвращает пустую строку */
     @NotNull
     public String getSettingValueWithNameAndSectorId(@NotNull String name, Long sectorId) {
         List<SectorSettingsMap> settings = getBySectorId(sectorId);
