@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.backend.dao.mapper.IOperationMapper">
+
+    <select id="getAll">
+        select * from operation
+    </select>
+
+    <select id="getById">
+        select * from operation where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO operation(sector_id,date,amount,fee,description,email,state,type,pan_mask,payment_system) VALUES(#{sectorId},#{timestamp},#{amount},#{fee},#{description},#{email},#{state},#{type},#{pan_mask},#{paymentSystem});
+    </insert>
+
+    <update id="update" parameterType="com.practice.backend.dao.model.Operation">
+        UPDATE operation
+        SET sector_id = #{sectorId},
+            date = #{timestamp},
+            amount = #{amount},
+            fee = #{fee},
+            description = #{description},
+            email = #{email},
+            state = #{state},
+            type = #{type},
+            pan_mask = #{pan_mask},
+            payment_system = #{paymentSystem}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete">
+        delete from operation where id = #{id}
+    </delete>
+</mapper>

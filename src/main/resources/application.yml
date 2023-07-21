@@ -1,4 +1,38 @@
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 3
   servlet:
     context-path: /api
+logging:
+  file:
+    name: applicationLog.log
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/backend-practice
+    driver-class-name: org.postgresql.Driver
+    connection-timeout: 20000
+    minimum-idle: 5
+    maximum-pool-size: 10
+    max-lifetime: 900000
+    username: postgres
+    password: teach1postgres
+
+mybatis:
+  type-aliases-package: com.practice.backend.dao.mapper
+  mapper-locations: classpath:**/mapper/*.xml
+

@@ -1,0 +1,36 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.backend.dao.mapper.IFeeMapper">
+
+    <select id="getAll">
+        select * from fee
+    </select>
+
+    <select id="getById">
+        select * from fee where id = (#{id})
+    </select>
+
+    <select id="getBySectorId">
+        select * from fee where sector_id = (#{sectorId})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fee(sector_id,paymentsystem,percent,fix,notless) VALUES(#{sectorId},#{paymentSystem},#{percent},#{fix},#{notLess});
+    </insert>
+
+    <update id="update" parameterType="com.practice.backend.dao.model.Fee">
+        UPDATE fee
+        SET sector_id = #{sectorId},
+            paymentsystem = #{paymentSystem},
+            percent = #{percent},
+            fix = #{fix},
+            notless = #{notLess}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete">
+        delete from fee where id = #{id}
+    </delete>
+</mapper>

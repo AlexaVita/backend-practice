@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>SUAI PAY</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" media="all" th:href="@{/styles/notify.css}" />
+  <link rel="stylesheet" type="text/css" media="all" th:href="@{/styles/reset.css}" />
+</head>
+
+<body>
+  <div class="center">
+    <div class="notify center">
+      <span class="notify__emoji">😱</span>
+      <p class="notify__message" th:text="${error.message}">Что-то пошло не так. Повторите позднее.</p>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <div class="footer__container">
+    <section class="footer__items">
+      <div class="footer__logos">
+        <figure>
+          <img th:src="@{/assets/visa-icon.svg}" alt="visa__icon"/>
+        </figure>
+        <figure>
+          <img th:src="@{/assets/mastercard-icon.svg}" alt="mcard__icon" />
+        </figure>
+        <figure>
+          <img th:src="@{/assets/mir.svg}" alt="mir__icon" />
+        </figure>
+      </div>
+
+      <div class="footer__secure">
+        <figure class="lock__icon">
+          <img th:src="@{/assets/ic_lock.svg}" alt="lock__icon" />
+        </figure>
+        <span class="secure__info">Данные банковской карты будут<br />
+          переданы в зашифрованном виде</span>
+      </div>
+
+      <div class="footer__order">Заказ №112480</div>
+    </section>
+  </div>
+</body>
+
+</html>

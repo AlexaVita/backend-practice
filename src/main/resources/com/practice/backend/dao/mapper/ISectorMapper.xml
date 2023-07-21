@@ -1,0 +1,33 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.practice.backend.dao.mapper.ISectorMapper">
+
+    <select id="getAll">
+        select * from sector
+    </select>
+
+    <select id="getById">
+        select * from sector where id = (#{id})
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sector(name,active,signcode,checkIp,allowedIps) VALUES(#{name},#{active},#{signcode},#{checkIp},#{allowedIps});
+    </insert>
+
+    <update id="update" parameterType="com.practice.backend.dao.model.Sector">
+        UPDATE sector
+        SET name = #{name},
+            active = #{active},
+            signCode = #{signCode},
+            checkIp = #{checkIp},
+            allowedIps = #{allowedIps}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete">
+        delete from sector where id = #{id}
+    </delete>
+
+</mapper>
